@@ -24,3 +24,8 @@ html.lenis body {
 .lenis.lenis-smooth iframe {
   pointer-events: none;
 }
+
+html.hero-intro-active,
+html.hero-intro-active body {
+  overflow: hidden !important;
+}

@@ -11,6 +11,11 @@ const MOBILE_RING_COUNT = 3;
 const MOBILE_IMAGES_PER_RING = 5;
 const FRONT_CARD_SCALE_BOOST = 0.25;
 const BACK_CARD_SCALE_REDUCTION = 0.1;
+const CARD_TEXTURE_INSET = 0.08;
+const CURVATURE_IDLE_DELAY = 180;
+const ACTIVE_CURVATURE_DAMPING = 6;
+const REST_CURVATURE_DAMPING = 2.2;
+const HERO_SCROLL_STAGES = 2;
 
 function createCurvedCardGeometry(width, height) {
   const geometry = new THREE.PlaneGeometry(width, height, 18, 12);
@@ -69,7 +74,6 @@ export default function HeroOrbitScene({ images, title }) {
   const rootRef = useRef(null);
   const backCanvasRef = useRef(null);
   const frontCanvasRef = useRef(null);
-  const headingRef = useRef(null);
 
   useLayoutEffect(() => {
     gsap.registerPlugin(ScrollTrigger);
@@ -77,14 +81,12 @@ export default function HeroOrbitScene({ images, title }) {
     const root = rootRef.current;
     const backCanvasHost = backCanvasRef.current;
     const frontCanvasHost = frontCanvasRef.current;
-    const heading = headingRef.current;
     const heroSection = root?.closest("section");
 
     if (
       !root ||
       !backCanvasHost ||
       !frontCanvasHost ||
-      !heading ||
       !heroSection ||
       !images.length
     ) {
@@ -131,15 +133,17 @@ export default function HeroOrbitScene({ images, title }) {
         isDesktop ? 1.58 : 1.34,
         isDesktop ? 2.44 : 2.04,
       );
-      const clock = new THREE.Clock();
+      const timer = new THREE.Timer();
+      timer.connect(document);
       const worldPosition = new THREE.Vector3();
       const cards = [];
       const textureCache = new Map();
       const scrollState = { rotation: 0, verticalFlow: 0 };
       const ringSpan = ringCount * ringSpacing;
-      const curveState = { current: 1, target: 1 };
+      const curveState = { current: 0, target: 0 };
       let frameId = 0;
       let refreshFrameId = 0;
+      let curvatureResetTimer = 0;
       let disposed = false;
 
       camera.position.set(0, 0, isDesktop ? 18 : 16.5);
@@ -198,6 +202,11 @@ export default function HeroOrbitScene({ images, title }) {
               const texture = await textureLoader.loadAsync(texturePath);
               texture.colorSpace = THREE.SRGBColorSpace;
               texture.minFilter = THREE.LinearFilter;
+              texture.offset.set(CARD_TEXTURE_INSET, CARD_TEXTURE_INSET);
+              texture.repeat.set(
+                1 - CARD_TEXTURE_INSET * 2,
+                1 - CARD_TEXTURE_INSET * 2,
+              );
               return [source, texture];
             } catch {
               return [source, null];
@@ -228,14 +237,21 @@ export default function HeroOrbitScene({ images, title }) {
               scrollTrigger: {
                 trigger: heroSection,
                 start: "top top",
-                end: () => `+=${window.innerHeight * 3}`,
+                end: () =>
+                  `+=${window.innerHeight * (HERO_SCROLL_STAGES - 1)}`,
                 pin: true,
                 pinSpacing: true,
                 scrub: true,
                 anticipatePin: 1,
                 invalidateOnRefresh: true,
                 onUpdate: (self) => {
+                  if (Math.abs(self.getVelocity()) < 1) return;
+
                   curveState.target = self.direction >= 0 ? -1 : 1;
+                  window.clearTimeout(curvatureResetTimer);
+                  curvatureResetTimer = window.setTimeout(() => {
+                    curveState.target = 0;
+                  }, CURVATURE_IDLE_DELAY);
                 },
               },
             })
@@ -248,28 +264,25 @@ export default function HeroOrbitScene({ images, title }) {
                 ease: "none",
               },
               0,
-            )
-            .to(
-              heading,
-              {
-                rotationY: 360,
-                transformOrigin: "center center",
-                scale: 1,
-                duration: 1,
-                ease: "none",
-              },
-              0,
             );
 
-      const render = () => {
+      const render = (timestamp) => {
         if (disposed) return;
 
-        const delta = clock.getDelta();
-        const elapsed = clock.elapsedTime;
+        timer.update(timestamp);
+        const delta = timer.getDelta();
+        const elapsed = timer.getElapsed();
         spiralGroup.rotation.y = (reducedMotion ? 0 : elapsed * 0.028) + scrollState.rotation;
         curveState.current = reducedMotion
-          ? 1
-          : THREE.MathUtils.damp(curveState.current, curveState.target, 6, delta);
+          ? 0
+          : THREE.MathUtils.damp(
+              curveState.current,
+              curveState.target,
+              curveState.target === 0
+                ? REST_CURVATURE_DAMPING
+                : ACTIVE_CURVATURE_DAMPING,
+              delta,
+            );
         updateCardCurvature(sharedGeometry, curveState.current);
 
         ringGroups.forEach((ringGroup) => {
@@ -352,6 +365,7 @@ export default function HeroOrbitScene({ images, title }) {
         disposed = true;
         window.cancelAnimationFrame(frameId);
         window.cancelAnimationFrame(refreshFrameId);
+        window.clearTimeout(curvatureResetTimer);
         scrollAnimation?.kill();
         resizeObserver.disconnect();
 
@@ -360,6 +374,7 @@ export default function HeroOrbitScene({ images, title }) {
           mesh.material.dispose();
         });
         sharedGeometry.dispose();
+        timer.dispose();
         textureCache.forEach((texture) => texture.dispose());
         [backRenderer, frontRenderer].forEach((renderer) => {
           renderer.dispose();
@@ -376,9 +391,7 @@ export default function HeroOrbitScene({ images, title }) {
     <div ref={rootRef} className="absolute inset-0 z-[1] overflow-hidden">
       <div ref={backCanvasRef} className="absolute inset-0 z-[5]" aria-hidden="true" />
       <h1 id="hero-title" className="pointer-events-none absolute inset-0 z-10 flex items-center justify-center px-6 text-center text-[clamp(1.75rem,2.5vw,3.25rem)] font-semibold uppercase leading-[0.85] tracking-[-0.06em] text-white mix-blend-normal md:px-16">
-        <span ref={headingRef} className="inline-block will-change-transform">
-          {title}
-        </span>
+        <span className="inline-block">{title}</span>
       </h1>
       <div ref={frontCanvasRef} className="pointer-events-none absolute inset-0 z-20" aria-hidden="true" />
     </div>
