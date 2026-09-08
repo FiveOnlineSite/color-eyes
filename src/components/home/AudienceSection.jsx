@@ -1,6 +1,7 @@
 import Image from "next/image";
 
 import SectionBadge from "./SectionBadge";
+import WaveHeadingText from "./WaveHeadingText";
 
 const audiences = [
   { title: "Consumer", copy: "Comfortable lens solutions made for daily wear, clear vision and effortless self-expression.", icon: "audience-consumer.svg" },
@@ -21,7 +22,9 @@ export default function AudienceSection() {
         className="mt-6 mb-[42px] text-4xl leading-12 font-bold text-[#232323] [font-family:var(--font-gabarito)] max-[640px]:text-[30px] max-[640px]:leading-[39px]"
         id="audience-title"
       >
-        Made for Every Perspective.<br />Designed for Every Need.
+        <WaveHeadingText
+          lines={["Made for Every Perspective.", "Designed for Every Need."]}
+        />
       </h2>
       <div className="grid h-[315px] grid-cols-4 border-y border-dashed border-[#777] max-[900px]:h-auto max-[900px]:grid-cols-2 max-[640px]:grid-cols-1">
         {audiences.map(({ title, copy, icon }) => (

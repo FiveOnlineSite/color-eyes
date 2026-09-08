@@ -6,7 +6,7 @@ import FooterWordmark from "./FooterWordmark";
 const contactDetails = [
   ["map-pin.svg", "A/3. 2nd Floor, Vishnu Apartment, Babhai Naka, L.T Road, Borivali (West), Mumbai - 400092, India."],
   ["phone.svg", "+91 9876543210"],
-  ["mail.svg", "admin@vibhutiinsurance.com"],
+  ["mail.svg", "admin@coloreyes.com"],
 ];
 
 const columnClasses =

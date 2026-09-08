@@ -9,6 +9,9 @@ const DESKTOP_RING_COUNT = 3;
 const DESKTOP_IMAGES_PER_RING = 8;
 const MOBILE_RING_COUNT = 3;
 const MOBILE_IMAGES_PER_RING = 5;
+const MOBILE_SPIRAL_ANGLE_STEP = 0.82;
+const MOBILE_SPIRAL_HEIGHT = 8.2;
+const MOBILE_SPIRAL_RADIUS = 3.1;
 const FRONT_CARD_SCALE_BOOST = 0.25;
 const BACK_CARD_SCALE_REDUCTION = 0.1;
 const CARD_TEXTURE_INSET = 0.08;
@@ -62,11 +65,12 @@ function updateCardCurvature(geometry, amount) {
   geometry.computeVertexNormals();
 }
 
-function getRingPlacement(index, imagesPerRing) {
+function getRingPlacement(index, imagesPerRing, ringSpacing) {
   const angle = -Math.PI / 2 + (index / imagesPerRing) * Math.PI * 2;
 
   return {
     angle,
+    yOffset: (index / imagesPerRing - 0.5) * ringSpacing,
   };
 }
 
@@ -100,7 +104,7 @@ export default function HeroOrbitScene({ images, title }) {
       const imagesPerRing = isDesktop ? DESKTOP_IMAGES_PER_RING : MOBILE_IMAGES_PER_RING;
       const ringImages = images.slice(0, Math.min(images.length, imagesPerRing));
       const activeImages = Array.from({ length: ringCount }, () => ringImages).flat();
-      const ringSpacing = isDesktop ? 4.7 : 3.45;
+      const ringSpacing = isDesktop ? 4.7 : 3;
       const textureLoader = new THREE.TextureLoader();
       const scene = new THREE.Scene();
       const camera = new THREE.PerspectiveCamera(isDesktop ? 36 : 42, 1, 0.1, 100);
@@ -122,7 +126,7 @@ export default function HeroOrbitScene({ images, title }) {
       const ringGroups = Array.from({ length: ringCount }, (_, index) => {
         const group = new THREE.Group();
 
-        group.userData.radius = isDesktop ? 6.7 : 3.9;
+        group.userData.radius = isDesktop ? 6.7 : 3.1;
         group.userData.baseY = (index - (ringCount - 1) / 2) * ringSpacing;
         group.position.y = group.userData.baseY;
         group.position.z = 0;
@@ -140,6 +144,7 @@ export default function HeroOrbitScene({ images, title }) {
       const textureCache = new Map();
       const scrollState = { rotation: 0, verticalFlow: 0 };
       const ringSpan = ringCount * ringSpacing;
+      const verticalSpan = isDesktop ? ringSpan : MOBILE_SPIRAL_HEIGHT;
       const curveState = { current: 0, target: 0 };
       let frameId = 0;
       let refreshFrameId = 0;
@@ -170,7 +175,18 @@ export default function HeroOrbitScene({ images, title }) {
           if (!texture) return;
 
           const ringIndex = Math.floor(index / imagesPerRing);
-          const placement = getRingPlacement(index % imagesPerRing, imagesPerRing);
+          const placement = isDesktop
+            ? getRingPlacement(
+                index % imagesPerRing,
+                imagesPerRing,
+                ringSpacing,
+              )
+            : {
+                angle: -Math.PI / 2 + index * MOBILE_SPIRAL_ANGLE_STEP,
+                yOffset:
+                  (index / Math.max(activeImages.length - 1, 1) - 0.5) *
+                  MOBILE_SPIRAL_HEIGHT,
+              };
           const material = new THREE.MeshBasicMaterial({
             map: texture,
             transparent: true,
@@ -186,9 +202,17 @@ export default function HeroOrbitScene({ images, title }) {
           mesh.userData = {
             angle: placement.angle,
             ringIndex,
+            radius: isDesktop
+              ? ringGroups[ringIndex].userData.radius
+              : MOBILE_SPIRAL_RADIUS,
+            yOffset: placement.yOffset,
           };
 
-          ringGroups[ringIndex].add(mesh);
+          if (isDesktop) {
+            ringGroups[ringIndex].add(mesh);
+          } else {
+            spiralGroup.add(mesh);
+          }
           cards.push(mesh);
         });
       };
@@ -259,7 +283,7 @@ export default function HeroOrbitScene({ images, title }) {
               scrollState,
               {
                 rotation: Math.PI * 2 * 1.35,
-                verticalFlow: ringSpan * 0.67,
+                verticalFlow: verticalSpan * 0.67,
                 duration: 1,
                 ease: "none",
               },
@@ -285,21 +309,28 @@ export default function HeroOrbitScene({ images, title }) {
             );
         updateCardCurvature(sharedGeometry, curveState.current);
 
-        ringGroups.forEach((ringGroup) => {
-          ringGroup.position.y =
-            THREE.MathUtils.euclideanModulo(
-              ringGroup.userData.baseY + scrollState.verticalFlow + ringSpan / 2,
-              ringSpan,
-            ) -
-            ringSpan / 2;
-        });
+        if (isDesktop) {
+          ringGroups.forEach((ringGroup) => {
+            ringGroup.position.y =
+              THREE.MathUtils.euclideanModulo(
+                ringGroup.userData.baseY + scrollState.verticalFlow + ringSpan / 2,
+                ringSpan,
+              ) -
+              ringSpan / 2;
+          });
+        }
 
         cards.forEach((mesh) => {
-          const { angle, ringIndex } = mesh.userData;
-          const radius = ringGroups[ringIndex].userData.radius;
+          const { angle, radius, yOffset } = mesh.userData;
 
           mesh.position.x = Math.cos(angle) * radius;
-          mesh.position.y = 0;
+          mesh.position.y = isDesktop
+            ? yOffset
+            : THREE.MathUtils.euclideanModulo(
+                yOffset + scrollState.verticalFlow + verticalSpan / 2,
+                verticalSpan,
+              ) -
+              verticalSpan / 2;
           mesh.position.z = Math.sin(angle) * radius;
           mesh.rotation.z = 0;
         });
@@ -307,7 +338,7 @@ export default function HeroOrbitScene({ images, title }) {
         scene.updateMatrixWorld();
         cards.forEach((mesh) => {
           mesh.getWorldPosition(worldPosition);
-          const ringGroup = ringGroups[mesh.userData.ringIndex];
+          const { radius } = mesh.userData;
           const verticalLayerFocus =
             1 -
             THREE.MathUtils.smoothstep(
@@ -323,13 +354,13 @@ export default function HeroOrbitScene({ images, title }) {
           const frontFocus = THREE.MathUtils.smoothstep(
             worldPosition.z,
             0,
-            ringGroup.userData.radius * 0.95,
+            radius * 0.95,
           );
           const backFocus =
             1 -
             THREE.MathUtils.smoothstep(
               worldPosition.z,
-              -ringGroup.userData.radius * 0.95,
+              -radius * 0.95,
               0,
             );
           const depthScale =

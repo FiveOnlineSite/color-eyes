@@ -5,6 +5,7 @@ import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react
 import gsap from "gsap";
 
 import SectionBadge from "./SectionBadge";
+import WaveHeadingText from "./WaveHeadingText";
 
 const stories = [
   {
@@ -59,6 +60,15 @@ export default function ClientStoriesSection() {
   const cardRefs = useRef([]);
   const [activeIndex, setActiveIndex] = useState(1);
   const [mutedStories, setMutedStories] = useState(() => stories.map(() => true));
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia("(max-width: 640px)");
+    const updateViewport = () => setIsMobile(mediaQuery.matches);
+    updateViewport();
+    mediaQuery.addEventListener("change", updateViewport);
+    return () => mediaQuery.removeEventListener("change", updateViewport);
+  }, []);
 
   const sendPlayerCommand = useCallback((index, func, args = []) => {
     playerRefs.current[index]?.contentWindow?.postMessage(
@@ -103,7 +113,6 @@ export default function ClientStoriesSection() {
   }, []);
 
   useLayoutEffect(() => {
-    const isMobile = window.matchMedia("(max-width: 640px)").matches;
     const sideOffset = isMobile ? window.innerWidth * 0.38 : 337;
     const sideY = isMobile ? 31 : 29;
     const sideScaleX = isMobile ? 0.73 : 0.846;
@@ -147,7 +156,7 @@ export default function ClientStoriesSection() {
     });
 
     return () => tweens.forEach((tween) => tween.kill());
-  }, [activeIndex]);
+  }, [activeIndex, isMobile]);
 
   const finishDrag = (event) => {
     if (!dragRef.current.active) return;
@@ -178,19 +187,19 @@ export default function ClientStoriesSection() {
 
   return (
     <section
-      className="relative flex h-[1079px] flex-col items-center overflow-hidden bg-[#fafafa] pt-[60px] max-[640px]:h-[760px] max-[640px]:pt-14"
+      className="relative flex h-[1079px] flex-col items-center overflow-hidden bg-[#fafafa] pt-[60px] max-[900px]:h-[900px] max-[640px]:h-auto max-[640px]:min-h-[720px] max-[640px]:px-4 max-[640px]:pt-14 max-[640px]:pb-14"
       aria-labelledby="stories-title"
     >
       <SectionBadge>Our Clients</SectionBadge>
       <h2
-        className="mt-6 text-4xl leading-12 font-bold text-[#232323] [font-family:var(--font-gabarito)] max-[640px]:text-[31px]"
+        className="mt-6 text-center text-4xl leading-12 font-bold text-[#232323] [font-family:var(--font-gabarito)] max-[640px]:text-[clamp(28px,8vw,31px)] max-[640px]:leading-9"
         id="stories-title"
       >
-        Seen, Worn &amp; Trusted
+        <WaveHeadingText lines="Seen, Worn & Trusted" />
       </h2>
 
       <div
-        className="relative mt-11 h-[600px] w-[min(1084px,calc(100%-80px))] touch-pan-y select-none max-[900px]:origin-top max-[900px]:scale-80 max-[640px]:mt-10 max-[640px]:h-[480px] max-[640px]:w-full max-[640px]:scale-100"
+        className="relative mt-11 h-[600px] w-[min(1084px,calc(100%-80px))] touch-pan-y select-none max-[900px]:origin-top max-[900px]:scale-80 max-[640px]:mt-10 max-[640px]:h-[clamp(390px,122vw,480px)] max-[640px]:w-full max-[640px]:scale-100"
         onPointerCancel={finishDrag}
         onPointerDown={onPointerDown}
         onPointerUp={finishDrag}
@@ -202,7 +211,7 @@ export default function ClientStoriesSection() {
 
           return (
             <article
-              className={`absolute top-[14px] left-1/2 h-[572px] w-[485px] origin-top overflow-hidden rounded-lg will-change-transform max-[640px]:h-[452px] max-[640px]:w-[74vw] ${
+              className={`absolute top-[14px] left-1/2 h-[572px] w-[485px] origin-top overflow-hidden rounded-lg will-change-transform max-[640px]:aspect-[0.654] max-[640px]:h-auto max-[640px]:w-[min(74vw,320px)] ${
                 position > 1 && position !== stories.length - 1 ? "pointer-events-none" : ""
               }`}
               key={story.title}

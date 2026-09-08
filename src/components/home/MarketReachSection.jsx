@@ -1,6 +1,7 @@
 import Image from "next/image";
 
 import SectionBadge from "./SectionBadge";
+import WaveHeadingText from "./WaveHeadingText";
 
 const locations = [
   { name: "Lucknow", x: 727, y: 388 },
@@ -47,11 +48,11 @@ function LocationMarker({ name, x, y }) {
   return (
     <button
       aria-label={`${name} market location`}
-      className="group absolute z-20 grid size-8 -translate-x-1/2 -translate-y-1/2 cursor-pointer place-items-center rounded-full text-white outline-none hover:z-50 focus-visible:z-50 focus-visible:ring-2 focus-visible:ring-white/90"
+      className="group absolute z-20 grid size-8 -translate-x-1/2 -translate-y-1/2 cursor-pointer place-items-center rounded-full text-white outline-none hover:z-50 focus-visible:z-50 focus-visible:ring-2 focus-visible:ring-white/90 max-[640px]:size-6"
       style={{ left: `${(x / 1440) * 100}%`, top: `${(y / 780) * 100}%` }}
       type="button"
     >
-      <MapPinIcon className="h-5 w-4 transition-transform duration-200 group-hover:-translate-y-0.5 group-hover:scale-110" />
+      <MapPinIcon className="h-5 w-4 transition-transform duration-200 group-hover:-translate-y-0.5 group-hover:scale-110 max-[640px]:h-4 max-[640px]:w-3" />
 
       <span
         className="pointer-events-none absolute bottom-[calc(100%-1px)] left-1/2 z-50 flex h-10 -translate-x-1/2 translate-y-1 items-center justify-center gap-2.5 whitespace-nowrap rounded-full bg-white px-4 text-sm font-medium text-[#074b5a] opacity-0 shadow-[0_8px_22px_rgba(5,54,66,0.16)] transition-[opacity,transform] duration-200 [font-family:var(--font-manrope)] group-hover:translate-y-0 group-hover:opacity-100 group-focus-visible:translate-y-0 group-focus-visible:opacity-100"
@@ -67,31 +68,43 @@ function LocationMarker({ name, x, y }) {
 export default function MarketReachSection() {
   return (
     <section
-      className="relative isolate h-[780px] overflow-hidden bg-[#3d6fa7] max-[900px]:h-[620px]"
+      className="relative isolate h-[780px] overflow-hidden bg-[#3d6fa7] max-[900px]:h-[620px] max-[640px]:h-[660px]"
       id="distributors"
       aria-labelledby="market-title"
     >
+      <video
+        aria-hidden="true"
+        autoPlay
+        className="absolute inset-0 z-0 size-full object-cover object-center"
+        loop
+        muted
+        playsInline
+        preload="metadata"
+      >
+        <source src="/assets/bg-sky.mp4" type="video/mp4" />
+      </video>
+      <div aria-hidden="true" className="absolute inset-0 z-[1] bg-[#145a8d]/35" />
       <div
         aria-hidden="true"
-        className="absolute inset-0 bg-[radial-gradient(circle_at_18%_22%,rgba(255,255,255,0.28),transparent_25%),radial-gradient(circle_at_81%_25%,rgba(255,255,255,0.22),transparent_24%),radial-gradient(circle_at_66%_74%,rgba(255,255,255,0.13),transparent_27%)] opacity-80"
+        className="absolute inset-0 z-[2] bg-[radial-gradient(circle_at_18%_22%,rgba(255,255,255,0.28),transparent_25%),radial-gradient(circle_at_81%_25%,rgba(255,255,255,0.22),transparent_24%),radial-gradient(circle_at_66%_74%,rgba(255,255,255,0.13),transparent_27%)] opacity-60"
       />
       <div
         aria-hidden="true"
-        className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.14)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.14)_1px,transparent_1px)] [background-size:44px_44px] [mask-image:linear-gradient(to_bottom,black_4%,transparent_92%)]"
+        className="absolute inset-0 z-[3] bg-[linear-gradient(rgba(255,255,255,0.14)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.14)_1px,transparent_1px)] [background-size:44px_44px] [mask-image:linear-gradient(to_bottom,black_4%,transparent_92%)]"
       />
 
-      <div className="absolute top-[60px] right-0 left-0 z-30 flex justify-center">
+      <div className="absolute top-[60px] right-0 left-0 z-30 flex justify-center max-[640px]:top-8 max-[400px]:scale-90">
         <SectionBadge tone="white">Our Market Reach</SectionBadge>
       </div>
 
       <h2
-        className="absolute top-[132px] right-6 left-6 z-30 text-center text-[40px] leading-12 font-bold text-white [font-family:var(--font-gabarito)] max-[640px]:top-[126px] max-[640px]:text-[32px] max-[640px]:leading-10"
+        className="absolute top-[132px] right-6 left-6 z-30 text-center text-[40px] leading-12 font-bold text-white [font-family:var(--font-gabarito)] max-[640px]:top-[94px] max-[640px]:text-[clamp(28px,8.5vw,32px)] max-[640px]:leading-9"
         id="market-title"
       >
-        Growing Across Every Market
+        <WaveHeadingText lines="Growing Across Every Market" />
       </h2>
 
-      <div className="absolute top-0 left-1/2 h-full aspect-[1440/780] -translate-x-1/2">
+      <div className="absolute top-0 left-1/2 z-10 h-full aspect-[1440/780] -translate-x-1/2 max-[640px]:top-6 max-[640px]:h-[585px] max-[640px]:w-[1080px] max-[640px]:aspect-auto">
         <Image
           aria-hidden="true"
           className="pointer-events-none select-none object-fill"

@@ -1,7 +1,6 @@
 "use client";
 
 import { Canvas, useFrame } from "@react-three/fiber";
-import Image from "next/image";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 const firstLine = "COLORS THAT";
@@ -23,7 +22,7 @@ function ParticleText({ children, letterRefs, startIndex = 0 }) {
   ));
 }
 
-function ParticleCloud({ pointerRef, targets }) {
+function ParticleCloud({ pointerRef, targets, pointSize }) {
   const pointsRef = useRef(null);
   const velocitiesRef = useRef(new Float32Array(targets.length));
   const particleCount = targets.length / 3;
@@ -103,7 +102,7 @@ function ParticleCloud({ pointerRef, targets }) {
         color={particleColor}
         depthWrite={false}
         opacity={0.96}
-        size={2.35}
+        size={pointSize}
         sizeAttenuation={false}
         transparent
       />
@@ -111,17 +110,21 @@ function ParticleCloud({ pointerRef, targets }) {
   );
 }
 
-function ParticleCanvas({ data, isActive, pointerRef }) {
+function ParticleCanvas({ data, isActive, isCompact, pointerRef }) {
   return (
     <Canvas
       className={`pointer-events-none! absolute! inset-0! z-10 ${isActive ? "visible" : "invisible"}`}
       orthographic
       camera={{ far: 1000, near: 0.1, position: [0, 0, 100], zoom: 1 }}
-      dpr={[1, 2]}
+      dpr={isCompact ? [1, 1.25] : [1, 2]}
       frameloop={isActive ? "always" : "never"}
       gl={{ alpha: true, antialias: true }}
     >
-      <ParticleCloud pointerRef={pointerRef} targets={data.targets} />
+      <ParticleCloud
+        pointerRef={pointerRef}
+        targets={data.targets}
+        pointSize={isCompact ? 1.7 : 2.35}
+      />
     </Canvas>
   );
 }
@@ -133,6 +136,7 @@ export default function ParticleHeading() {
   const [isParticleCanvasActive, setIsParticleCanvasActive] = useState(false);
   const [particleData, setParticleData] = useState(null);
   const [reducedMotion, setReducedMotion] = useState(false);
+  const [isCompactViewport, setIsCompactViewport] = useState(false);
 
   const sampleHeading = useCallback(() => {
     if (!containerRef.current) return;
@@ -162,7 +166,7 @@ export default function ParticleHeading() {
     });
 
     const pixels = context.getImageData(0, 0, width, height).data;
-    const spacing = width > 800 ? 5 : 4;
+    const spacing = width > 800 ? 5 : width <= 640 ? 5 : 4;
     const points = [];
 
     for (let y = Math.floor(spacing / 2); y < height; y += spacing) {
@@ -191,6 +195,14 @@ export default function ParticleHeading() {
     updateMotionPreference();
     mediaQuery.addEventListener("change", updateMotionPreference);
     return () => mediaQuery.removeEventListener("change", updateMotionPreference);
+  }, []);
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia("(max-width: 640px)");
+    const updateViewport = () => setIsCompactViewport(mediaQuery.matches);
+    updateViewport();
+    mediaQuery.addEventListener("change", updateViewport);
+    return () => mediaQuery.removeEventListener("change", updateViewport);
   }, []);
 
   useEffect(() => {
@@ -250,12 +262,13 @@ export default function ParticleHeading() {
     pointerRef.current = { active: true, radius: 140, x: 0, y: 0 };
   }
 
-  const showParticles = Boolean(particleData) && !reducedMotion;
+  const showParticles =
+    Boolean(particleData) && !reducedMotion && !isCompactViewport;
   const particlesAreActive = showParticles && isParticleCanvasActive;
 
   return (
     <h2
-      className="mt-8 mb-[42px] text-[clamp(72px,7.64vw,110px)] leading-[1.09] font-extrabold tracking-[-2.2px] text-[#1667c2] uppercase [font-family:var(--font-gabarito)] max-[1180px]:text-[76px] max-[900px]:mb-9 max-[900px]:text-[clamp(48px,9vw,72px)] max-[640px]:text-[42px] max-[640px]:leading-[1.14] max-[640px]:tracking-[-0.8px]"
+      className="mt-8 mb-[42px] max-w-full text-[clamp(72px,7.64vw,110px)] leading-[1.09] font-extrabold tracking-[-2.2px] text-[#1667c2] uppercase [font-family:var(--font-gabarito)] max-[1180px]:text-[76px] max-[900px]:mb-9 max-[900px]:text-[clamp(48px,9vw,72px)] max-[640px]:mt-6 max-[640px]:mb-4 max-[640px]:text-[clamp(28px,8.7vw,42px)] max-[640px]:leading-[1.14] max-[640px]:tracking-[-1.1px]"
       id="manifesto-title"
     >
       <button
@@ -273,6 +286,7 @@ export default function ParticleHeading() {
             <ParticleCanvas
               data={particleData}
               isActive={particlesAreActive}
+              isCompact={isCompactViewport}
               pointerRef={pointerRef}
             />
           ) : null}
@@ -280,14 +294,18 @@ export default function ParticleHeading() {
             <span className={showParticles ? "opacity-0" : undefined}>
               <ParticleText letterRefs={letterRefs}>{firstLine}</ParticleText>
             </span>{" "}
-            <span className="relative ml-1.5 inline-block h-20 w-[205px] translate-y-1 overflow-hidden rounded-[63px] align-baseline max-[900px]:h-[58px] max-[900px]:w-[150px] max-[640px]:h-10 max-[640px]:w-[94px] max-[640px]:translate-y-px">
-              <Image
-                className="scale-150 object-cover object-[50%_38%]"
-                src="/assets/hero-06.png"
-                alt=""
-                fill
-                sizes="205px"
-              />
+            <span className="relative ml-1.5 inline-block h-20 w-[205px] translate-y-1 overflow-hidden rounded-[63px] align-baseline max-[900px]:h-[58px] max-[900px]:w-[150px] max-[640px]:ml-1 max-[640px]:h-8 max-[640px]:w-[72px] max-[640px]:translate-y-px">
+              <video
+                aria-hidden="true"
+                autoPlay
+                className="absolute inset-0 size-full scale-150 object-cover object-[50%_38%]"
+                loop
+                muted
+                playsInline
+                preload="metadata"
+              >
+                <source src="/assets/eye.mp4" type="video/mp4" />
+              </video>
             </span>
           </span>
           <span className={`block whitespace-nowrap ${showParticles ? "opacity-0" : ""}`}>

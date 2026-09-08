@@ -1,7 +1,6 @@
-import Header from "./Header";
 import HeroOrbitScene from "./HeroOrbitScene";
 
-const floatingImages = [
+export const floatingImages = [
   ["hero-04.png", "Contact lens suspended in blue liquid"],
   ["hero-05.png", "Woman applying an eye-care product"],
   ["hero-06.png", "Blue eye close-up"],
@@ -31,11 +30,22 @@ export default function HeroSection() {
       id="home"
       aria-labelledby="hero-title"
     >
+      <video
+        aria-hidden="true"
+        autoPlay
+        className="absolute inset-0 -z-[4] size-full object-cover object-center"
+        loop
+        muted
+        playsInline
+        preload="metadata"
+      >
+        <source src="/assets/bg-sky.mp4" type="video/mp4" />
+      </video>
+      <div aria-hidden="true" className="absolute inset-0 -z-[3] bg-[#145a8d]/35" />
       <div
         className="absolute inset-x-[-104px] top-[-410px] -z-[2] h-[1145px] bg-[url('/assets/hero-grid.svg')] bg-cover bg-center bg-no-repeat"
         aria-hidden="true"
       />
-      <Header />
       <HeroOrbitScene images={floatingImages} title="Color your vision" />
     </section>
   );

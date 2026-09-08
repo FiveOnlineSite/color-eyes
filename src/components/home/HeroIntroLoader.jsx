@@ -6,8 +6,8 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 const HERO_BLUE = "#a9cdec";
-const IMAGE_REVEAL_DURATION = 0.42;
-const IMAGE_HOLD_DURATION = 0.32;
+const IMAGE_REVEAL_DURATION = 0.38;
+const IMAGE_HOLD_DURATION = 0.5;
 const BLUE_HOLD_DURATION = 0.55;
 
 const BLOCKED_SCROLL_KEYS = new Set([
@@ -70,6 +70,7 @@ export default function HeroIntroLoader({ images }) {
     const finishIntro = () => {
       if (disposed) return;
       unlockScroll();
+      root.classList.remove("hero-intro-loader");
       gsap.set(root, { display: "none" });
       window.requestAnimationFrame(() => ScrollTrigger.refresh());
     };
@@ -87,22 +88,22 @@ export default function HeroIntroLoader({ images }) {
 
     gsap.set(imageNodes, {
       autoAlpha: 0,
-      clipPath: "inset(50% 0% 50% 0%)",
+      scale: 0.96,
     });
     gsap.set(percent, { autoAlpha: 1, textContent: "0%" });
 
-    const preloadImages = Promise.all(
-      sources.map(
-        (source) =>
-          new Promise((resolve) => {
-            const image = new window.Image();
-            const complete = () => resolve();
-            image.onload = complete;
-            image.onerror = complete;
-            image.src = source;
-            if (image.complete) complete();
-          }),
-      ),
+    const preloadImages = sources.map(
+      (source) =>
+        new Promise((resolve) => {
+          const image = new window.Image();
+          const complete = () => resolve();
+          image.onload = () => {
+            image.decode?.().catch(() => undefined).finally(complete);
+          };
+          image.onerror = complete;
+          image.src = source;
+          if (image.complete) complete();
+        }),
     );
 
     const playIntro = () => {
@@ -122,12 +123,12 @@ export default function HeroIntroLoader({ images }) {
           timeline
             .set(imageNode, {
               autoAlpha: 1,
-              clipPath: "inset(50% 0% 50% 0%)",
+              scale: 0.96,
             })
             .to(imageNode, {
-              clipPath: "inset(0% 0% 0% 0%)",
+              scale: 1,
               duration: IMAGE_REVEAL_DURATION,
-              ease: "power2.out",
+              ease: "power2.inOut",
             })
             .to({}, { duration: IMAGE_HOLD_DURATION })
             .set(imageNode, { autoAlpha: 0 });
@@ -144,12 +145,13 @@ export default function HeroIntroLoader({ images }) {
           );
         });
       } else {
-        timeline.to(progress, {
-          value: 100,
-          duration: 0.3,
-          ease: "none",
-          onUpdate: updatePercentage,
-        });
+        timeline
+          .to(progress, {
+            value: 100,
+            duration: 0.3,
+            ease: "none",
+            onUpdate: updatePercentage,
+          });
       }
 
       timeline
@@ -178,19 +180,29 @@ export default function HeroIntroLoader({ images }) {
         });
     };
 
-    void preloadImages.then(playIntro);
+    void Promise.all(preloadImages).then(playIntro);
 
     return () => {
       disposed = true;
       timeline?.kill();
       unlockScroll();
+      root.classList.remove("hero-intro-loader");
     };
   }, [sources]);
 
   return (
     <div
       ref={rootRef}
-      className="fixed inset-0 z-[200] grid place-items-center overflow-hidden bg-white"
+      className="hero-intro-loader fixed inset-0 z-[200] grid place-items-center overflow-hidden bg-white"
+      style={{
+        backgroundColor: "#fff",
+        display: "grid",
+        inset: 0,
+        overflow: "hidden",
+        placeItems: "center",
+        position: "fixed",
+        zIndex: 200,
+      }}
       aria-hidden="true"
     >
       <div
@@ -203,7 +215,7 @@ export default function HeroIntroLoader({ images }) {
             ref={(node) => {
               imageRefs.current[index] = node;
             }}
-            className="absolute inset-0 object-cover object-center opacity-0 will-change-[clip-path]"
+            className="absolute inset-0 object-cover object-center opacity-0 will-change-[transform,opacity]"
             src={source}
             alt=""
             fill

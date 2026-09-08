@@ -240,7 +240,7 @@ function MobileBrandSlide({ brand }) {
         <BrandCategories className="mt-7 max-[479px]:gap-2 max-[479px]:text-[11px]" />
 
         <h3
-          className={`mt-4 text-[clamp(56px,17vw,76px)] leading-none font-bold tracking-[-0.8px] ${brand.headingFont}`}
+          className={`mt-4 max-w-full text-[clamp(42px,13vw,58px)] leading-none font-bold tracking-[-0.8px] ${brand.headingFont}`}
           id={`${brand.id}-mobile-title`}
         >
           {brand.title}

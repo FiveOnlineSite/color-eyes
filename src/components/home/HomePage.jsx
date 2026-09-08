@@ -4,9 +4,11 @@ import ContactSection from "./ContactSection";
 import Footer from "./Footer";
 import HeroIntroLoader from "./HeroIntroLoader";
 import HeroSection from "./HeroSection";
+import Header from "./Header";
 import ManifestoSection from "./ManifestoSection";
 import MarketReachSection from "./MarketReachSection";
 import ProductShowcaseSection from "./ProductShowcaseSection";
+import WhatsAppButton from "./WhatsAppButton";
 
 const loaderImages = [
   ["loader1.jpg", "Loader image 1"],
@@ -21,6 +23,7 @@ export default function HomePage() {
   return (
     <main>
       <HeroIntroLoader images={loaderImages} />
+      <Header />
       <HeroSection />
       <ManifestoSection />
       <ProductShowcaseSection />
@@ -29,6 +32,7 @@ export default function HomePage() {
       <ClientStoriesSection />
       <ContactSection />
       <Footer />
+      <WhatsAppButton />
     </main>
   );
 }

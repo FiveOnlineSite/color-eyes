@@ -29,3 +29,36 @@ html.hero-intro-active,
 html.hero-intro-active body {
   overflow: hidden !important;
 }
+
+html:has(.hero-intro-loader),
+html:has(.hero-intro-loader) body {
+  overflow: hidden !important;
+}
+
+.wavy-heading__letter {
+  display: inline-block;
+  transform: translateY(0);
+  will-change: transform;
+}
+
+.wavy-heading:hover .wavy-heading__letter {
+  animation: wavy-heading-lift 560ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-delay: calc(var(--wave-index) * 14ms);
+}
+
+@keyframes wavy-heading-lift {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  45% {
+    transform: translateY(-0.22em);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .wavy-heading:hover .wavy-heading__letter {
+    animation: none;
+  }
+}
