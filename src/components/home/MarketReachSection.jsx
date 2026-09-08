@@ -101,7 +101,12 @@ export default function MarketReachSection() {
         className="absolute top-[132px] right-6 left-6 z-30 text-center text-[40px] leading-12 font-bold text-white [font-family:var(--font-gabarito)] max-[640px]:top-[94px] max-[640px]:text-[clamp(28px,8.5vw,32px)] max-[640px]:leading-9"
         id="market-title"
       >
-        <WaveHeadingText lines="Growing Across Every Market" />
+        <span className="max-[640px]:hidden">
+          <WaveHeadingText lines="Growing Across Every Market" />
+        </span>
+        <span className="hidden max-[640px]:inline">
+          <WaveHeadingText lines={["Growing Across", "Every Market"]} />
+        </span>
       </h2>
 
       <div className="absolute top-0 left-1/2 z-10 h-full aspect-[1440/780] -translate-x-1/2 max-[640px]:top-6 max-[640px]:h-[585px] max-[640px]:w-[1080px] max-[640px]:aspect-auto">

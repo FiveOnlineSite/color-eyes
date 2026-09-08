@@ -19,7 +19,7 @@ export default function AudienceSection() {
     >
       <SectionBadge tone="gray">Built For Everyone</SectionBadge>
       <h2
-        className="mt-6 mb-[42px] text-4xl leading-12 font-bold text-[#232323] [font-family:var(--font-gabarito)] max-[640px]:text-[30px] max-[640px]:leading-[39px]"
+        className="mt-6 mb-[42px] text-4xl leading-12 font-bold text-[#232323] [font-family:var(--font-gabarito)] max-[640px]:text-[clamp(20px,7vw,30px)] max-[640px]:leading-[1.3]"
         id="audience-title"
       >
         <WaveHeadingText

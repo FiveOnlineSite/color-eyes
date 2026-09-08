@@ -31,7 +31,12 @@ export default function ContactSection() {
           className="mt-5 text-5xl leading-14 font-bold [font-family:var(--font-gabarito)] max-[640px]:text-[38px] max-[640px]:leading-[46px]"
           id="contact-title"
         >
-          <WaveHeadingText lines="Connect With Coloreyes" />
+          <span className="max-[640px]:hidden">
+            <WaveHeadingText lines="Connect With Coloreyes" />
+          </span>
+          <span className="hidden max-[640px]:inline">
+            <WaveHeadingText lines={["Connect With", "Coloreyes"]} />
+          </span>
         </h2>
         <p className="mt-4 w-[435px] text-center text-sm leading-6 [font-family:var(--font-manrope)] max-[640px]:w-full">
           Have a question about our products, partnerships or eye-care solutions?
