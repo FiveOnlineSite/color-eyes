@@ -1,4 +1,7 @@
+"use client";
+
 import Image from "next/image";
+import { useState } from "react";
 
 import SectionBadge from "./SectionBadge";
 import WaveHeadingText from "./WaveHeadingText";
@@ -45,17 +48,25 @@ function MapPinIcon({ className = "" }) {
 }
 
 function LocationMarker({ name, x, y }) {
+  const [isTouchActive, setIsTouchActive] = useState(false);
+  const tooltipId = `market-location-${name.toLowerCase().replaceAll(" ", "-")}`;
+
   return (
     <button
+      aria-describedby={isTouchActive ? tooltipId : undefined}
+      aria-expanded={isTouchActive}
       aria-label={`${name} market location`}
       className="group absolute z-20 grid size-8 -translate-x-1/2 -translate-y-1/2 cursor-pointer place-items-center rounded-full text-white outline-none hover:z-50 focus-visible:z-50 focus-visible:ring-2 focus-visible:ring-white/90 max-[640px]:size-6"
+      onBlur={() => setIsTouchActive(false)}
+      onClick={() => setIsTouchActive((isActive) => !isActive)}
       style={{ left: `${(x / 1440) * 100}%`, top: `${(y / 780) * 100}%` }}
       type="button"
     >
       <MapPinIcon className="h-5 w-4 transition-transform duration-200 group-hover:-translate-y-0.5 group-hover:scale-110 max-[640px]:h-4 max-[640px]:w-3" />
 
       <span
-        className="pointer-events-none absolute bottom-[calc(100%-1px)] left-1/2 z-50 flex h-10 -translate-x-1/2 translate-y-1 items-center justify-center gap-2.5 whitespace-nowrap rounded-full bg-white px-4 text-sm font-medium text-[#074b5a] opacity-0 shadow-[0_8px_22px_rgba(5,54,66,0.16)] transition-[opacity,transform] duration-200 [font-family:var(--font-manrope)] group-hover:translate-y-0 group-hover:opacity-100 group-focus-visible:translate-y-0 group-focus-visible:opacity-100"
+        className={`pointer-events-none absolute bottom-[calc(100%-1px)] left-1/2 z-50 flex h-10 -translate-x-1/2 items-center justify-center gap-2.5 whitespace-nowrap rounded-full bg-white px-4 text-sm font-medium text-[#074b5a] shadow-[0_8px_22px_rgba(5,54,66,0.16)] transition-[opacity,transform] duration-200 [font-family:var(--font-manrope)] group-hover:translate-y-0 group-hover:opacity-100 group-focus-visible:translate-y-0 group-focus-visible:opacity-100 ${isTouchActive ? "translate-y-0 opacity-100" : "translate-y-1 opacity-0"}`}
+        id={tooltipId}
         role="tooltip"
       >
         <MapPinIcon className="h-5 w-4 shrink-0" />

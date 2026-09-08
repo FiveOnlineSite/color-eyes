@@ -21,6 +21,7 @@ export default function FooterWordmark() {
   const letterRefs = useRef([]);
   const wordRef = useRef(null);
   const frameRef = useRef(null);
+  const touchResetRef = useRef(null);
   const isHoveringRef = useRef(false);
   const motionRef = useRef(
     letters.map(() => ({ current: 0, target: 0, velocity: 0 })),
@@ -101,9 +102,29 @@ export default function FooterWordmark() {
     startAnimation();
   }
 
+  function startTouchInteraction(event) {
+    if (event.pointerType === "mouse") return;
+
+    if (touchResetRef.current) clearTimeout(touchResetRef.current);
+    event.currentTarget.setPointerCapture?.(event.pointerId);
+    moveNearbyLetters(event);
+  }
+
+  function finishTouchInteraction(event) {
+    if (event.pointerType === "mouse") return;
+
+    touchResetRef.current = setTimeout(resetLetters, 650);
+  }
+
+  function handlePointerLeave(event) {
+    if (event.pointerType !== "mouse") return;
+    resetLetters();
+  }
+
   useEffect(() => {
     return () => {
       if (frameRef.current) cancelAnimationFrame(frameRef.current);
+      if (touchResetRef.current) clearTimeout(touchResetRef.current);
     };
   }, []);
 
@@ -111,8 +132,11 @@ export default function FooterWordmark() {
     <p
       aria-label="Coloreyes"
       className="absolute right-0 bottom-[112px] left-0 m-0 flex justify-center text-center text-[clamp(145px,15.6vw,225px)] leading-none font-extrabold tracking-[2.2px] whitespace-nowrap text-[#666] uppercase [font-family:var(--font-gabarito)] max-[900px]:text-[13.25vw] max-[640px]:bottom-[127px] max-[640px]:text-[13.7vw]"
-      onPointerLeave={resetLetters}
+      onPointerCancel={finishTouchInteraction}
+      onPointerDown={startTouchInteraction}
+      onPointerLeave={handlePointerLeave}
       onPointerMove={moveNearbyLetters}
+      onPointerUp={finishTouchInteraction}
     >
       <span
         aria-hidden="true"
