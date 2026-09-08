@@ -56,7 +56,7 @@ function LocationMarker({ name, x, y }) {
       aria-describedby={isTouchActive ? tooltipId : undefined}
       aria-expanded={isTouchActive}
       aria-label={`${name} market location`}
-      className="group absolute z-20 grid size-8 -translate-x-1/2 -translate-y-1/2 cursor-pointer place-items-center rounded-full text-white outline-none hover:z-50 focus-visible:z-50 focus-visible:ring-2 focus-visible:ring-white/90 max-[640px]:size-6"
+      className={`group absolute grid size-8 -translate-x-1/2 -translate-y-1/2 cursor-pointer place-items-center rounded-full text-white outline-none hover:z-50 focus-visible:z-50 focus-visible:ring-2 focus-visible:ring-white/90 max-[640px]:size-6 ${isTouchActive ? "z-50" : "z-20"}`}
       onBlur={() => setIsTouchActive(false)}
       onClick={() => setIsTouchActive((isActive) => !isActive)}
       style={{ left: `${(x / 1440) * 100}%`, top: `${(y / 780) * 100}%` }}
