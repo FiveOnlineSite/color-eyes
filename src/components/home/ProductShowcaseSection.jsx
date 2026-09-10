@@ -14,7 +14,7 @@ const brands = [
     count: "01/03",
     description:
       "Colour made to stand out. Comfort made to stay with you.",
-    background: "/assets/celebration-showcase-bg.png",
+    background: "/assets/celebration-showcase-bg.webp",
     mark: "celebration",
     headingFont: "[font-family:var(--font-gabarito)]",
     backgroundClass: "object-cover",
@@ -26,7 +26,7 @@ const brands = [
     count: "02/03",
     description:
       "Everyday clarity, effortless comfort — made to move with you.",
-    background: "/assets/brand-polylite-bg.png",
+    background: "/assets/brand-polylite-bg.webp",
     mark: "polylite",
     headingFont: "[font-family:var(--font-oswald)]",
     backgroundClass: "object-cover",
@@ -38,7 +38,7 @@ const brands = [
     count: "03/03",
     description:
       "Subtle colour, natural comfort — made to feel effortlessly you.",
-    background: "/assets/brand-clearthin-bg.png",
+    background: "/assets/brand-clearthin-bg.webp",
     mark: "clearthin",
     headingFont: "[font-family:var(--font-oswald)]",
     backgroundClass: "object-cover mix-blend-color-burn",
