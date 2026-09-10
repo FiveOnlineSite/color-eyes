@@ -26,11 +26,13 @@ export default function Header() {
         aria-label="ColorEyes home"
       >
         <Image
-          className="h-10 w-[147px] object-contain max-[900px]:w-[122px]"
+          className="h-auto w-[147px] object-contain max-[900px]:w-[122px]"
           src="/assets/logo.png"
           alt="ColorEyes Eyecare Pvt. Ltd."
           width={147}
           height={40}
+          sizes="(max-width: 900px) 122px, 147px"
+          quality={70}
           priority
         />
       </Link>

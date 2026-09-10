@@ -207,7 +207,7 @@ export default function HeroIntroLoader({ images }) {
     >
       <div
         ref={cardRef}
-        className="relative aspect-[4/5] w-[min(68vw,250px)] shrink-0 overflow-hidden will-change-[width,height]"
+        className="relative aspect-square w-[min(68vw,250px)] shrink-0 overflow-hidden will-change-[width,height]"
       >
         {sources.map((source, index) => (
           <Image
@@ -215,7 +215,7 @@ export default function HeroIntroLoader({ images }) {
             ref={(node) => {
               imageRefs.current[index] = node;
             }}
-            className="absolute inset-0 object-cover object-center opacity-0 will-change-[transform,opacity]"
+            className="absolute inset-0 object-contain object-center opacity-0 will-change-[transform,opacity]"
             src={source}
             alt=""
             fill

@@ -11,12 +11,13 @@ import ProductShowcaseSection from "./ProductShowcaseSection";
 import WhatsAppButton from "./WhatsAppButton";
 
 const loaderImages = [
-  ["loader1.jpg", "Loader image 1"],
-  ["loader3.jpg", "Loader image 3"],
-  ["loader4.jpg", "Loader image 4"],
-  ["loader5.jpg", "Loader image 5"],
-  ["loader6.jpg", "Loader image 6"],
-  ["loader7.jpg", "Loader image 7"],
+  ["blue-lens.webp", "Blue contact lens"],
+  ["brown-lens.webp", "Brown contact lens"],
+  ["green-lens.webp", "Green contact lens"],
+  ["grey-lens.webp", "Grey contact lens"],
+  ["olive-lens.webp", "Olive contact lens"],
+  ["purple-eyes.webp", "Purple contact lens"],
+  ["yellow-lens.webp", "Yellow contact lens"],
 ];
 
 export default function HomePage() {
