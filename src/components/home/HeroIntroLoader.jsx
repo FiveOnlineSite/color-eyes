@@ -90,6 +90,9 @@ export default function HeroIntroLoader({ images }) {
       autoAlpha: 0,
       scale: 0.96,
     });
+    if (imageNodes[0]) {
+      gsap.set(imageNodes[0], { autoAlpha: 1 });
+    }
     gsap.set(percent, { autoAlpha: 1, textContent: "0%" });
 
     const preloadImages = sources.map(
@@ -221,7 +224,9 @@ export default function HeroIntroLoader({ images }) {
             ref={(node) => {
               imageRefs.current[index] = node;
             }}
-            className="absolute inset-0 object-contain object-center opacity-0 will-change-[transform,opacity]"
+            className={`absolute inset-0 object-contain object-center will-change-[transform,opacity] ${
+              index === 0 ? "opacity-100" : "opacity-0"
+            }`}
             src={source}
             alt=""
             fill
