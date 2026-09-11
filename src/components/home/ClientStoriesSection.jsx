@@ -44,19 +44,36 @@ const stories = [
 ];
 
 export default function ClientStoriesSection() {
+  const sectionRef = useRef(null);
   const swiperRef = useRef(null);
   const videoRefs = useRef([]);
   const [activeIndex, setActiveIndex] = useState(1);
+  const [isStoriesInView, setIsStoriesInView] = useState(false);
   const [mutedStories, setMutedStories] = useState(() => stories.map(() => true));
 
   useEffect(() => {
+    const section = sectionRef.current;
+    if (!section) return undefined;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => setIsStoriesInView(entry.isIntersecting),
+      { rootMargin: "300px 0px" },
+    );
+
+    observer.observe(section);
+    return () => observer.disconnect();
+  }, []);
+
+  useEffect(() => {
+    if (!isStoriesInView) return;
+
     const video = videoRefs.current[activeIndex];
     if (!video) return;
 
     video.muted = mutedStories[activeIndex];
     video.currentTime = 0;
     void video.play().catch(() => undefined);
-  }, [activeIndex, mutedStories]);
+  }, [activeIndex, isStoriesInView, mutedStories]);
 
   const toggleMuted = (index) => {
     setMutedStories((current) =>
@@ -68,6 +85,7 @@ export default function ClientStoriesSection() {
 
   return (
     <section
+      ref={sectionRef}
       className="relative flex h-[1079px] flex-col items-center overflow-hidden bg-[#fafafa] pt-[60px] max-[900px]:h-[900px] max-[640px]:h-auto max-[640px]:min-h-[720px] max-[640px]:px-4 max-[640px]:pt-14 max-[640px]:pb-14"
       aria-labelledby="stories-title"
     >
@@ -114,7 +132,7 @@ export default function ClientStoriesSection() {
         >
           {stories.map((story, index) => {
             const isMuted = mutedStories[index];
-            const isActive = index === activeIndex;
+            const isActive = isStoriesInView && index === activeIndex;
 
             return (
               <SwiperSlide
@@ -130,7 +148,7 @@ export default function ClientStoriesSection() {
                       muted={isMuted}
                       onEnded={() => swiperRef.current?.slideNext()}
                       playsInline
-                      preload="metadata"
+                      preload="none"
                       ref={(node) => {
                         videoRefs.current[index] = node;
                       }}
