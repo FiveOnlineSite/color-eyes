@@ -109,6 +109,12 @@ export default function HeroIntroLoader({ images }) {
     const playIntro = () => {
       if (disposed) return;
 
+      const viewportWidth = window.innerWidth;
+      const viewportHeight = window.innerHeight;
+      const cardSize = Math.min(viewportWidth * 0.68, 250);
+      const fullscreenScaleX = viewportWidth / cardSize;
+      const fullscreenScaleY = viewportHeight / cardSize;
+
       timeline = gsap.timeline({ onComplete: finishIntro });
       const progress = { value: 0 };
       const updatePercentage = () => {
@@ -168,8 +174,8 @@ export default function HeroIntroLoader({ images }) {
           ease: "power1.out",
         })
         .to(card, {
-          scaleX: root.clientWidth / card.offsetWidth,
-          scaleY: root.clientHeight / card.offsetHeight,
+          scaleX: fullscreenScaleX,
+          scaleY: fullscreenScaleY,
           duration: reducedMotion ? 0.25 : 0.8,
           ease: "power3.inOut",
         })

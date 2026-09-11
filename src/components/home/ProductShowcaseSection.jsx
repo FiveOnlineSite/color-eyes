@@ -181,9 +181,9 @@ function BrandArtwork({ brand, side }) {
         className={`-z-20 pointer-events-none select-none object-center ${brand.backgroundClass}`}
         draggable={false}
         fill
+        quality={70}
         sizes="100vw"
         src={brand.background}
-        unoptimized
       />
       {brand.overlayClass ? (
         <div
