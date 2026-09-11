@@ -19,6 +19,10 @@ const CURVATURE_IDLE_DELAY = 180;
 const ACTIVE_CURVATURE_DAMPING = 6;
 const REST_CURVATURE_DAMPING = 2.2;
 const HERO_SCROLL_STAGES = 2;
+const HERO_INTRO_COMPLETE_EVENT = "hero-intro-complete";
+const MAX_RENDER_FPS = 30;
+const FRAME_INTERVAL = 1000 / MAX_RENDER_FPS;
+const CURVATURE_UPDATE_EPSILON = 0.001;
 
 function createCurvedCardGeometry(width, height) {
   const geometry = new THREE.PlaneGeometry(width, height, 18, 12);
@@ -150,6 +154,16 @@ export default function HeroOrbitScene({ images, title }) {
       let refreshFrameId = 0;
       let curvatureResetTimer = 0;
       let disposed = false;
+      let lastFrameTime = 0;
+      let appliedCurvature = Number.NaN;
+      let introIsComplete = !document.querySelector(".hero-intro-loader");
+
+      const handleIntroComplete = () => {
+        introIsComplete = true;
+        lastFrameTime = 0;
+      };
+
+      window.addEventListener(HERO_INTRO_COMPLETE_EVENT, handleIntroComplete);
 
       camera.position.set(0, 0, isDesktop ? 18 : 16.5);
       masterGroup.add(spiralGroup);
@@ -293,6 +307,16 @@ export default function HeroOrbitScene({ images, title }) {
       const render = (timestamp) => {
         if (disposed) return;
 
+        frameId = window.requestAnimationFrame(render);
+        if (!introIsComplete) return;
+        if (
+          lastFrameTime &&
+          timestamp - lastFrameTime < FRAME_INTERVAL
+        ) {
+          return;
+        }
+        lastFrameTime = timestamp;
+
         timer.update(timestamp);
         const delta = timer.getDelta();
         const elapsed = timer.getElapsed();
@@ -307,7 +331,14 @@ export default function HeroOrbitScene({ images, title }) {
                 : ACTIVE_CURVATURE_DAMPING,
               delta,
             );
-        updateCardCurvature(sharedGeometry, curveState.current);
+        if (
+          !Number.isFinite(appliedCurvature) ||
+          Math.abs(curveState.current - appliedCurvature) >=
+            CURVATURE_UPDATE_EPSILON
+        ) {
+          updateCardCurvature(sharedGeometry, curveState.current);
+          appliedCurvature = curveState.current;
+        }
 
         if (isDesktop) {
           ringGroups.forEach((ringGroup) => {
@@ -387,16 +418,19 @@ export default function HeroOrbitScene({ images, title }) {
         });
         frontRenderer.render(scene, camera);
 
-        frameId = window.requestAnimationFrame(render);
       };
 
-      render();
+      render(performance.now());
 
       return () => {
         disposed = true;
         window.cancelAnimationFrame(frameId);
         window.cancelAnimationFrame(refreshFrameId);
         window.clearTimeout(curvatureResetTimer);
+        window.removeEventListener(
+          HERO_INTRO_COMPLETE_EVENT,
+          handleIntroComplete,
+        );
         scrollAnimation?.kill();
         resizeObserver.disconnect();
 

@@ -6,9 +6,10 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 const HERO_BLUE = "#a9cdec";
-const IMAGE_REVEAL_DURATION = 0.22;
-const IMAGE_HOLD_DURATION = 0.23;
-const BLUE_HOLD_DURATION = 0.25;
+const HERO_INTRO_COMPLETE_EVENT = "hero-intro-complete";
+const IMAGE_REVEAL_DURATION = 0.18;
+const IMAGE_HOLD_DURATION = 0.17;
+const BLUE_HOLD_DURATION = 0.2;
 
 const BLOCKED_SCROLL_KEYS = new Set([
   "ArrowDown",
@@ -72,6 +73,7 @@ export default function HeroIntroLoader({ images }) {
       unlockScroll();
       root.classList.remove("hero-intro-loader");
       gsap.set(root, { display: "none" });
+      window.dispatchEvent(new Event(HERO_INTRO_COMPLETE_EVENT));
       window.requestAnimationFrame(() => ScrollTrigger.refresh());
     };
 
@@ -167,24 +169,24 @@ export default function HeroIntroLoader({ images }) {
         .set(imageNodes, { autoAlpha: 0 })
         .to(blueCover, {
           autoAlpha: 1,
-          duration: reducedMotion ? 0.1 : 0.2,
+          duration: reducedMotion ? 0.1 : 0.15,
           ease: "power1.out",
         })
         .to({}, { duration: reducedMotion ? 0.1 : BLUE_HOLD_DURATION })
         .to(percent, {
           autoAlpha: 0,
-          duration: reducedMotion ? 0.05 : 0.15,
+          duration: reducedMotion ? 0.05 : 0.1,
           ease: "power1.out",
         })
         .to(card, {
           scaleX: fullscreenScaleX,
           scaleY: fullscreenScaleY,
-          duration: reducedMotion ? 0.25 : 0.7,
+          duration: reducedMotion ? 0.25 : 0.6,
           ease: "power3.inOut",
         })
         .to(root, {
           autoAlpha: 0,
-          duration: reducedMotion ? 0.1 : 0.18,
+          duration: reducedMotion ? 0.1 : 0.15,
           ease: "power1.out",
         });
     };
