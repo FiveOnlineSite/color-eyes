@@ -32,8 +32,8 @@ export default function Header() {
           width={147}
           height={40}
           sizes="(max-width: 900px) 122px, 147px"
-          quality={70}
-          priority
+          quality={55}
+          preload
         />
       </Link>
       <nav
