@@ -168,8 +168,8 @@ export default function HeroIntroLoader({ images }) {
           ease: "power1.out",
         })
         .to(card, {
-          width: "100vw",
-          height: "100vh",
+          scaleX: root.clientWidth / card.offsetWidth,
+          scaleY: root.clientHeight / card.offsetHeight,
           duration: reducedMotion ? 0.35 : 1.2,
           ease: "power3.inOut",
         })
@@ -207,7 +207,7 @@ export default function HeroIntroLoader({ images }) {
     >
       <div
         ref={cardRef}
-        className="relative aspect-square w-[min(68vw,250px)] shrink-0 overflow-hidden will-change-[width,height]"
+        className="relative aspect-square w-[min(68vw,250px)] shrink-0 overflow-hidden will-change-transform"
       >
         {sources.map((source, index) => (
           <Image
