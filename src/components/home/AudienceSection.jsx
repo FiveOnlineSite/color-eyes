@@ -7,7 +7,7 @@ const audiences = [
   { title: "Consumer", copy: "Comfortable lens solutions made for daily wear, clear vision and effortless self-expression.", icon: "audience-consumer-animated.gif" },
   { title: "Beauty Professional", copy: "Versatile lens options that help artists elevate makeup, styling and visual expression.", icon: "audience-beauty-animated.gif" },
   { title: "Optical Retailers", copy: "A dependable range designed to help retailers serve varied customer needs with confidence.", icon: "audience-retailer-animated.gif" },
-  { title: "Distributors & Resellers", copy: "Comfortable lens solutions made for daily wear, clear vision and effortless self-expression.", icon: "audience-distributor-animated.gif" },
+  { title: "Distributors & Resellers", copy: "Comfortable lens solutions made for daily wear, clear vision and effortless self-expression.", icon: "audience-distributo-animated.gif" },
 ];
 
 export default function AudienceSection() {

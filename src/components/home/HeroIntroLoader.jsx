@@ -6,9 +6,9 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 const HERO_BLUE = "#a9cdec";
-const IMAGE_REVEAL_DURATION = 0.38;
-const IMAGE_HOLD_DURATION = 0.5;
-const BLUE_HOLD_DURATION = 0.55;
+const IMAGE_REVEAL_DURATION = 0.25;
+const IMAGE_HOLD_DURATION = 0.28;
+const BLUE_HOLD_DURATION = 0.3;
 
 const BLOCKED_SCROLL_KEYS = new Set([
   "ArrowDown",
@@ -170,12 +170,12 @@ export default function HeroIntroLoader({ images }) {
         .to(card, {
           scaleX: root.clientWidth / card.offsetWidth,
           scaleY: root.clientHeight / card.offsetHeight,
-          duration: reducedMotion ? 0.35 : 1.2,
+          duration: reducedMotion ? 0.25 : 0.8,
           ease: "power3.inOut",
         })
         .to(root, {
           autoAlpha: 0,
-          duration: reducedMotion ? 0.15 : 0.32,
+          duration: reducedMotion ? 0.1 : 0.22,
           ease: "power1.out",
         });
     };
