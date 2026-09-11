@@ -11,13 +11,13 @@ import ProductShowcaseSection from "./ProductShowcaseSection";
 import WhatsAppButton from "./WhatsAppButton";
 
 const loaderImages = [
-  ["blue-lens.webp", "Blue contact lens"],
-  ["brown-lens.webp", "Brown contact lens"],
-  ["green-lens.webp", "Green contact lens"],
-  ["grey-lens.webp", "Grey contact lens"],
-  ["olive-lens.webp", "Olive contact lens"],
-  ["purple-eyes.webp", "Purple contact lens"],
-  ["yellow-lens.webp", "Yellow contact lens"],
+  ["/assets/loader-lenses/blue-lens.webp", "Blue contact lens"],
+  ["/assets/loader-lenses/brown-lens.webp", "Brown contact lens"],
+  ["/assets/loader-lenses/green-lens.webp", "Green contact lens"],
+  ["/assets/loader-lenses/grey-lens.webp", "Grey contact lens"],
+  ["/assets/loader-lenses/olive-lens.webp", "Olive contact lens"],
+  ["/assets/loader-lenses/purple-eyes.webp", "Purple contact lens"],
+  ["/assets/loader-lenses/yellow-lens.webp", "Yellow contact lens"],
 ];
 
 export default function HomePage() {

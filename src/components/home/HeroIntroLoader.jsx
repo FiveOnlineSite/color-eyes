@@ -219,7 +219,7 @@ export default function HeroIntroLoader({ images }) {
             src={source}
             alt=""
             fill
-            priority
+            preload
             sizes="(max-width: 640px) 68vw, 250px"
             unoptimized
           />
