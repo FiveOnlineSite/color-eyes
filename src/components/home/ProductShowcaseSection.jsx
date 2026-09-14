@@ -486,7 +486,7 @@ export default function ProductShowcaseSection() {
         <a
           aria-label="View products"
           className="invisible absolute top-0 left-0 z-50 grid size-[clamp(108px,8.68vw,138px)] place-items-center rounded-full text-[clamp(14px,1.11vw,17px)] font-medium text-white opacity-0 [font-family:var(--font-roboto)]"
-          href="#contact"
+          href=""
           ref={productCursorRef}
           tabIndex={-1}
         >
