@@ -20,12 +20,17 @@ const ACTIVE_CURVATURE_DAMPING = 6;
 const REST_CURVATURE_DAMPING = 2.2;
 const HERO_SCROLL_STAGES = 2;
 const HERO_INTRO_COMPLETE_EVENT = "hero-intro-complete";
-const MAX_RENDER_FPS = 30;
-const FRAME_INTERVAL = 1000 / MAX_RENDER_FPS;
+const DESKTOP_MAX_RENDER_FPS = 30;
+const MOBILE_MAX_RENDER_FPS = 24;
 const CURVATURE_UPDATE_EPSILON = 0.001;
 
-function createCurvedCardGeometry(width, height) {
-  const geometry = new THREE.PlaneGeometry(width, height, 18, 12);
+function createCurvedCardGeometry(width, height, widthSegments, heightSegments) {
+  const geometry = new THREE.PlaneGeometry(
+    width,
+    height,
+    widthSegments,
+    heightSegments,
+  );
   const positions = geometry.attributes.position;
   const horizontalBendRadius = width * 1.72;
   const verticalBendRadius = height * 3.4;
@@ -104,6 +109,9 @@ export default function HeroOrbitScene({ images, title }) {
     const ctx = gsap.context(() => {
       const isDesktop = window.matchMedia("(min-width: 768px)").matches;
       const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      const frameInterval = 1000 / (
+        isDesktop ? DESKTOP_MAX_RENDER_FPS : MOBILE_MAX_RENDER_FPS
+      );
       const ringCount = isDesktop ? DESKTOP_RING_COUNT : MOBILE_RING_COUNT;
       const imagesPerRing = isDesktop ? DESKTOP_IMAGES_PER_RING : MOBILE_IMAGES_PER_RING;
       const ringImages = images.slice(0, Math.min(images.length, imagesPerRing));
@@ -113,10 +121,13 @@ export default function HeroOrbitScene({ images, title }) {
       const scene = new THREE.Scene();
       const camera = new THREE.PerspectiveCamera(isDesktop ? 36 : 42, 1, 0.1, 100);
       const createRenderer = (host) => {
-        const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+        const renderer = new THREE.WebGLRenderer({
+          alpha: true,
+          antialias: isDesktop,
+        });
         renderer.setClearColor(0x000000, 0);
         renderer.setPixelRatio(
-          Math.min(window.devicePixelRatio || 1, isDesktop ? 1.75 : 1.25),
+          Math.min(window.devicePixelRatio || 1, isDesktop ? 1.75 : 1),
         );
         renderer.outputColorSpace = THREE.SRGBColorSpace;
         renderer.domElement.className = "pointer-events-none block size-full";
@@ -140,6 +151,8 @@ export default function HeroOrbitScene({ images, title }) {
       const sharedGeometry = createCurvedCardGeometry(
         isDesktop ? 1.58 : 1.34,
         isDesktop ? 2.44 : 2.04,
+        isDesktop ? 18 : 10,
+        isDesktop ? 12 : 8,
       );
       const timer = new THREE.Timer();
       timer.connect(document);
@@ -311,7 +324,7 @@ export default function HeroOrbitScene({ images, title }) {
         if (!introIsComplete) return;
         if (
           lastFrameTime &&
-          timestamp - lastFrameTime < FRAME_INTERVAL
+          timestamp - lastFrameTime < frameInterval
         ) {
           return;
         }
