@@ -166,6 +166,12 @@ export default function ClientStoriesSection() {
                       }}
                     />
                   )}
+                  <div
+                    aria-hidden="true"
+                    className={`pointer-events-none absolute inset-0 bg-[#6b7280]/55 transition-opacity duration-500 ${
+                      isActive ? "opacity-0" : "opacity-100"
+                    }`}
+                  />
                   {isActive ? (
                     <button
                       aria-label={isMuted ? `Unmute ${story.title}` : `Mute ${story.title}`}
