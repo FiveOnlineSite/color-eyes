@@ -47,6 +47,11 @@ html:has(.hero-intro-loader) body {
   animation-delay: calc(var(--wave-index) * 14ms);
 }
 
+.client-stories-carousel .swiper-slide:not(.swiper-slide-active):not(.swiper-slide-prev):not(.swiper-slide-next) {
+  visibility: hidden;
+  pointer-events: none;
+}
+
 @keyframes wavy-heading-lift {
   0%,
   100% {

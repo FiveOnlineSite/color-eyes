@@ -129,8 +129,9 @@ export default function FooterWordmark() {
   }, []);
 
   return (
-    <p
+    <div
       aria-label="Coloreyes"
+      role="img"
       className="absolute right-0 bottom-[112px] left-0 m-0 flex justify-center text-center text-[clamp(145px,15.6vw,225px)] leading-none font-extrabold tracking-[2.2px] whitespace-nowrap text-[#666] uppercase [font-family:var(--font-gabarito)] max-[900px]:text-[13.25vw] max-[640px]:bottom-[127px] max-[640px]:text-[13.7vw]"
       onPointerCancel={finishTouchInteraction}
       onPointerDown={startTouchInteraction}
@@ -155,6 +156,6 @@ export default function FooterWordmark() {
           </span>
         ))}
       </span>
-    </p>
+    </div>
   );
 }

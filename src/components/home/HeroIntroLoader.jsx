@@ -232,9 +232,8 @@ export default function HeroIntroLoader({ images }) {
             src={source}
             alt=""
             fill
-            {...(index === 0
-              ? { preload: true, fetchPriority: "high" }
-              : {})}
+            loading="eager"
+            {...(index === 0 ? { fetchPriority: "high" } : {})}
             sizes="250px"
             unoptimized
           />

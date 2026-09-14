@@ -67,6 +67,10 @@ export default function ClientStoriesSection() {
   useEffect(() => {
     if (!isStoriesInView) return;
 
+    videoRefs.current.forEach((candidate, index) => {
+      if (index !== activeIndex) candidate?.pause();
+    });
+
     const video = videoRefs.current[activeIndex];
     if (!video) return;
 
@@ -86,7 +90,7 @@ export default function ClientStoriesSection() {
   return (
     <section
       ref={sectionRef}
-      className="relative flex h-[1079px] flex-col items-center overflow-hidden bg-[#fafafa] pt-[60px] max-[900px]:h-[900px] max-[640px]:h-auto max-[640px]:min-h-[720px] max-[640px]:px-4 max-[640px]:pt-14 max-[640px]:pb-14"
+      className="relative flex h-[920px] flex-col items-center overflow-hidden bg-[#fafafa] pt-[60px] max-[900px]:h-[820px] max-[640px]:h-auto max-[640px]:min-h-[680px] max-[640px]:px-4 max-[640px]:pt-14 max-[640px]:pb-14"
       aria-labelledby="stories-title"
     >
       <SectionBadge>Our Clients</SectionBadge>
@@ -98,12 +102,12 @@ export default function ClientStoriesSection() {
       </h2>
 
       <div
-        className="relative mt-11 h-[560px] w-[min(1000px,calc(100%-80px))] select-none max-[900px]:origin-top max-[900px]:scale-80 max-[640px]:mt-10 max-[640px]:h-[clamp(370px,116vw,455px)] max-[640px]:w-full max-[640px]:scale-100"
+        className="relative mt-9 h-[460px] w-[min(900px,calc(100%-80px))] select-none max-[900px]:origin-top max-[900px]:scale-80 max-[640px]:mt-8 max-[640px]:h-[clamp(340px,105vw,420px)] max-[640px]:w-full max-[640px]:scale-100"
       >
         <Swiper
           a11y={{ enabled: true }}
           centeredSlides
-          className="size-full overflow-hidden"
+          className="client-stories-carousel size-full overflow-hidden"
           coverflowEffect={{
             depth: 80,
             modifier: 1,
@@ -127,7 +131,7 @@ export default function ClientStoriesSection() {
           }}
           slideToClickedSlide
           slidesPerView="auto"
-          spaceBetween={-120}
+          spaceBetween={-96}
           speed={900}
         >
           {stories.map((story, index) => {
@@ -136,19 +140,18 @@ export default function ClientStoriesSection() {
 
             return (
               <SwiperSlide
-                className="mt-[14px] h-[530px]! w-[450px]! max-[640px]:aspect-[0.654] max-[640px]:h-auto! max-[640px]:w-[min(70vw,300px)]!"
+                className="mt-[10px] h-[430px]! w-[400px]! max-[640px]:aspect-[0.654] max-[640px]:h-auto! max-[640px]:w-[min(66vw,270px)]!"
                 key={story.title}
               >
                 <article className="relative size-full overflow-hidden rounded-lg">
-                  {isActive ? (
+                  {isStoriesInView ? (
                     <video
                       aria-label={story.title}
-                      autoPlay
                       className="pointer-events-none size-full scale-[1.55] border-0"
                       muted={isMuted}
                       onEnded={() => swiperRef.current?.slideNext()}
                       playsInline
-                      preload="none"
+                      preload="metadata"
                       ref={(node) => {
                         videoRefs.current[index] = node;
                       }}
@@ -163,11 +166,6 @@ export default function ClientStoriesSection() {
                       }}
                     />
                   )}
-                  <div
-                    className={`pointer-events-none absolute inset-0 bg-linear-to-b from-black/35 via-black/15 to-black/35 transition-opacity duration-700 ${
-                      isActive ? "opacity-0" : "opacity-100"
-                    }`}
-                  />
                   {isActive ? (
                     <button
                       aria-label={isMuted ? `Unmute ${story.title}` : `Mute ${story.title}`}

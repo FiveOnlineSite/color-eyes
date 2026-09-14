@@ -32,7 +32,15 @@ export default function AudienceSection() {
             className="flex flex-col justify-between border-r border-dashed border-[#777] p-6 last:border-r-0 max-[900px]:min-h-[260px] max-[900px]:border-b max-[900px]:even:border-r-0 max-[900px]:nth-[n+3]:border-b-0 max-[640px]:min-h-[220px] max-[640px]:border-r-0 max-[640px]:border-b! max-[640px]:last:border-b-0!"
             key={title}
           >
-            <Image className="size-10" src={`/assets/${icon}`} alt="" width={40} height={40} aria-hidden="true" />
+            <Image
+              className="size-10"
+              src={`/assets/${icon}`}
+              alt=""
+              width={40}
+              height={40}
+              aria-hidden="true"
+              unoptimized
+            />
             <div>
               <h3 className="mb-3 text-xl leading-[30px] font-semibold text-[#232323] [font-family:var(--font-gabarito)]">{title}</h3>
               <p className="m-0 text-sm leading-6 text-[#444] [font-family:var(--font-manrope)]">{copy}</p>
