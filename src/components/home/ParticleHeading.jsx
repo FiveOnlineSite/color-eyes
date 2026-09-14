@@ -3,6 +3,8 @@
 import { Canvas, useFrame } from "@react-three/fiber";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
+import DeferredVideo from "./DeferredVideo";
+
 const firstLine = "COLORS THAT";
 const secondLine = "CHANGES EVERYTHING";
 const particleColor = "#1667c2";
@@ -295,17 +297,16 @@ export default function ParticleHeading() {
               <ParticleText letterRefs={letterRefs}>{firstLine}</ParticleText>
             </span>{" "}
             <span className="relative ml-1.5 inline-block h-20 w-[205px] translate-y-1 overflow-hidden rounded-[63px] align-baseline max-[900px]:h-[58px] max-[900px]:w-[150px] max-[640px]:ml-1 max-[640px]:h-8 max-[640px]:w-[72px] max-[640px]:translate-y-px">
-              <video
+              <DeferredVideo
                 aria-hidden="true"
                 autoPlay
                 className="absolute inset-0 size-full scale-150 object-cover object-[50%_38%]"
                 loop
                 muted
                 playsInline
-                preload="metadata"
-              >
-                <source src="/assets/eye.mp4" type="video/mp4" />
-              </video>
+                src="/assets/eye.mp4"
+                type="video/mp4"
+              />
             </span>
           </span>
           <span className={`block whitespace-nowrap ${showParticles ? "opacity-0" : ""}`}>

@@ -1,4 +1,5 @@
 import ActionLink from "./ActionLink";
+import DeferredVideo from "./DeferredVideo";
 import SectionBadge from "./SectionBadge";
 import WaveHeadingText from "./WaveHeadingText";
 
@@ -9,17 +10,16 @@ export default function ContactSection() {
       id="contact"
       aria-labelledby="contact-title"
     >
-      <video
+      <DeferredVideo
         aria-hidden="true"
         autoPlay
         className="absolute inset-0 size-full object-cover object-center"
         loop
         muted
         playsInline
-        preload="metadata"
-      >
-        <source src="/assets/bg-sky.mp4" type="video/mp4" />
-      </video>
+        src="/assets/bg-sky.mp4"
+        type="video/mp4"
+      />
       <div
         aria-hidden="true"
         className="absolute inset-0 z-[1] bg-[#145a8d]/35"
