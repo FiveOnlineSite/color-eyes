@@ -98,10 +98,14 @@ export default function HeroIntroLoader({ images }) {
     gsap.set(percent, { autoAlpha: 1, textContent: "0%" });
 
     const preloadImages = sources.map(
-      (source) =>
+      (source, index) =>
         new Promise((resolve) => {
           const image = new window.Image();
           const complete = () => resolve();
+          const isFirstFrame = index === 0;
+
+          image.fetchPriority = isFirstFrame ? "high" : "auto";
+          image.decoding = isFirstFrame ? "sync" : "async";
           image.onload = () => {
             image.decode?.().catch(() => undefined).finally(complete);
           };
@@ -233,8 +237,8 @@ export default function HeroIntroLoader({ images }) {
             alt=""
             fill
             loading="eager"
-            fetchPriority="high"
-            decoding="sync"
+            fetchPriority={index === 0 ? "high" : undefined}
+            decoding={index === 0 ? "sync" : "async"}
             sizes="250px"
             unoptimized
           />
