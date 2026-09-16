@@ -512,11 +512,9 @@ export default function HeroOrbitScene({ images, title, showTitle = true }) {
   return (
     <div ref={rootRef} className="absolute inset-0 overflow-hidden">
       <div ref={backCanvasRef} className="absolute inset-0 z-[5]" aria-hidden="true" />
-      {showTitle ? (
-        <h1 id="hero-title" className="pointer-events-none absolute inset-0 z-10 flex items-center justify-center px-6 text-center text-[60px] leading-[72px] font-extrabold uppercase tracking-normal text-white mix-blend-normal [font-family:var(--font-gabarito)] max-[640px]:text-[36px] max-[640px]:leading-[44px] md:px-16">
-          <span className="inline-block">{title}</span>
-        </h1>
-      ) : null}
+      <h1 id="hero-title" className="pointer-events-none absolute inset-0 z-10 flex items-center justify-center px-6 text-center text-[60px] leading-[72px] font-extrabold uppercase tracking-normal text-white mix-blend-normal [font-family:var(--font-gabarito)] md:px-16">
+        <span className="inline-block">{title}</span>
+      </h1>
       <div ref={frontCanvasRef} className="pointer-events-none absolute inset-0 z-20" aria-hidden="true" />
     </div>
   );
