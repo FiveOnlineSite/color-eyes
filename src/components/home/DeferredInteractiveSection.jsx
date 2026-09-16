@@ -22,6 +22,8 @@ const sections = {
   stories: ClientStoriesSection,
 };
 
+const HERO_INTRO_COMPLETE_EVENT = "hero-intro-complete";
+
 const reservedSpace = {
   // The desktop product section is pinned for four viewport heights; reserving
   // that space prevents a layout shift while its animation bundle is fetched.
@@ -39,6 +41,25 @@ export default function DeferredInteractiveSection({ section }) {
     const host = hostRef.current;
     if (!host || !Section) return undefined;
 
+    // This section creates a multi-viewport GSAP pin spacer. Loading it only
+    // at the viewport boundary can briefly replace that spacer with a blank
+    // placeholder while ScrollTrigger initializes, so prepare it as soon as
+    // scrolling is unlocked instead.
+    if (section === "product") {
+      const loadProduct = () => setShouldLoad(true);
+
+      if (!document.querySelector(".hero-intro-loader")) {
+        loadProduct();
+        return undefined;
+      }
+
+      window.addEventListener(HERO_INTRO_COMPLETE_EVENT, loadProduct, {
+        once: true,
+      });
+      return () =>
+        window.removeEventListener(HERO_INTRO_COMPLETE_EVENT, loadProduct);
+    }
+
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (!entry.isIntersecting) return;
@@ -51,7 +72,7 @@ export default function DeferredInteractiveSection({ section }) {
 
     observer.observe(host);
     return () => observer.disconnect();
-  }, [Section]);
+  }, [Section, section]);
 
   if (!Section) return null;
 
