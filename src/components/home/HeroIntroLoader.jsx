@@ -3,7 +3,6 @@
 import Image from "next/image";
 import { useLayoutEffect, useMemo, useRef } from "react";
 import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 const HERO_BLUE = "#a9cdec";
 const HERO_INTRO_COMPLETE_EVENT = "hero-intro-complete";
@@ -39,8 +38,6 @@ export default function HeroIntroLoader({ images }) {
   );
 
   useLayoutEffect(() => {
-    gsap.registerPlugin(ScrollTrigger);
-
     const root = rootRef.current;
     const card = cardRef.current;
     const blueCover = blueCoverRef.current;
@@ -74,7 +71,6 @@ export default function HeroIntroLoader({ images }) {
       root.classList.remove("hero-intro-loader");
       gsap.set(root, { display: "none" });
       window.dispatchEvent(new Event(HERO_INTRO_COMPLETE_EVENT));
-      window.requestAnimationFrame(() => ScrollTrigger.refresh());
     };
 
     document.documentElement.classList.add("hero-intro-active");

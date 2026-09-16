@@ -2,9 +2,6 @@
 
 import { useEffect } from "react";
 import { usePathname } from "next/navigation";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-import Lenis from "lenis";
 
 export default function HomepageSmoothScroll() {
   const pathname = usePathname();
@@ -16,9 +13,21 @@ export default function HomepageSmoothScroll() {
     let started = false;
     let destroySmoothScroll = () => {};
 
-    const startSmoothScroll = () => {
+    const startSmoothScroll = async () => {
       if (disposed || started) return;
       started = true;
+
+      const [gsapModule, scrollTriggerModule, lenisModule] = await Promise.all([
+        import("gsap"),
+        import("gsap/ScrollTrigger"),
+        import("lenis"),
+      ]);
+
+      if (disposed) return;
+
+      const gsap = gsapModule.default;
+      const { ScrollTrigger } = scrollTriggerModule;
+      const Lenis = lenisModule.default;
       gsap.registerPlugin(ScrollTrigger);
 
       const lenis = new Lenis({
