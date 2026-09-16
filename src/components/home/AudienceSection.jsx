@@ -1,12 +1,12 @@
-import DeferredVideo from "./DeferredVideo";
+import Image from "next/image";
 import SectionBadge from "./SectionBadge";
 import WaveHeadingText from "./WaveHeadingText";
 
 const audiences = [
-  { title: "Consumer", copy: "Comfortable lens solutions made for daily wear, clear vision and effortless self-expression.", icon: "audience-consumer-animated.gif" },
-  { title: "Beauty Professional", copy: "Versatile lens options that help artists elevate makeup, styling and visual expression.", icon: "audience-beauty-animated.gif" },
-  { title: "Optical Retailers", copy: "A dependable range designed to help retailers serve varied customer needs with confidence.", icon: "audience-retailer-animated.gif" },
-  { title: "Distributors & Resellers", copy: "Comfortable lens solutions made for daily wear, clear vision and effortless self-expression.", icon: "audience-distributo-animated.gif" },
+  { title: "Consumer", copy: "Comfortable lens solutions made for daily wear, clear vision and effortless self-expression.", icon: "audience-consumer.svg" },
+  { title: "Beauty Professional", copy: "Versatile lens options that help artists elevate makeup, styling and visual expression.", icon: "audience-beauty.svg" },
+  { title: "Optical Retailers", copy: "A dependable range designed to help retailers serve varied customer needs with confidence.", icon: "audience-retailer.svg" },
+  { title: "Distributors & Resellers", copy: "Comfortable lens solutions made for daily wear, clear vision and effortless self-expression.", icon: "audience-distributor.svg" },
 ];
 
 export default function AudienceSection() {
@@ -31,15 +31,13 @@ export default function AudienceSection() {
             className="flex flex-col justify-between border-r border-dashed border-[#777] p-6 last:border-r-0 max-[900px]:min-h-[260px] max-[900px]:border-b max-[900px]:even:border-r-0 max-[900px]:nth-[n+3]:border-b-0 max-[640px]:min-h-[220px] max-[640px]:border-r-0 max-[640px]:border-b! max-[640px]:last:border-b-0!"
             key={title}
           >
-            <DeferredVideo
+            <Image
               aria-hidden="true"
-              autoPlay
               className="size-10"
-              loop
-              muted
-              playsInline
               src={`/assets/${icon}`}
-              type="video/webm"
+              alt=""
+              height={40}
+              width={40}
             />
             <div>
               <h3 className="mb-3 text-xl leading-[30px] font-semibold text-[#232323] [font-family:var(--font-gabarito)]">{title}</h3>
