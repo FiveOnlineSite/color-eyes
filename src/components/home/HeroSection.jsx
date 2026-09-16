@@ -1,4 +1,4 @@
-import HeroOrbitScene from "./HeroOrbitScene";
+import DeferredHeroOrbitScene from "./DeferredHeroOrbitScene";
 
 export const floatingImages = [
   ["hero-04.png", "Contact lens suspended in blue liquid"],
@@ -46,7 +46,10 @@ export default function HeroSection() {
         className="absolute inset-x-[-104px] top-[-410px] -z-[2] h-[1145px] bg-[url('/assets/hero-grid.svg')] bg-cover bg-center bg-no-repeat"
         aria-hidden="true"
       />
-      <HeroOrbitScene images={floatingImages} title="Color your vision" />
+      <h1 id="hero-title" className="pointer-events-none absolute inset-0 z-10 flex items-center justify-center px-6 text-center text-[60px] leading-[72px] font-extrabold uppercase tracking-normal text-white mix-blend-normal [font-family:var(--font-gabarito)] max-[640px]:text-[36px] max-[640px]:leading-[44px] md:px-16">
+        <span className="inline-block">Color your vision</span>
+      </h1>
+      <DeferredHeroOrbitScene images={floatingImages} title="Color your vision" />
     </section>
   );
 }
