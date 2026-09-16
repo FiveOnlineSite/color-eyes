@@ -1,13 +1,11 @@
 import AudienceSection from "./AudienceSection";
-import ClientStoriesSection from "./ClientStoriesSection";
 import ContactSection from "./ContactSection";
+import DeferredInteractiveSection from "./DeferredInteractiveSection";
 import Footer from "./Footer";
 import HeroIntroLoader from "./HeroIntroLoader";
 import HeroSection from "./HeroSection";
 import Header from "./Header";
 import ManifestoSection from "./ManifestoSection";
-import MarketReachSection from "./MarketReachSection";
-import ProductShowcaseSection from "./ProductShowcaseSection";
 import WhatsAppButton from "./WhatsAppButton";
 
 const loaderImages = [
@@ -27,10 +25,10 @@ export default function HomePage() {
       <Header />
       <HeroSection />
       <ManifestoSection />
-      <ProductShowcaseSection />
+      <DeferredInteractiveSection section="product" />
       <AudienceSection />
-      <MarketReachSection />
-      <ClientStoriesSection />
+      <DeferredInteractiveSection section="market" />
+      <DeferredInteractiveSection section="stories" />
       <ContactSection />
       <Footer />
       <WhatsAppButton />

@@ -170,13 +170,38 @@ export default function HeroOrbitScene({ images, title }) {
       let lastFrameTime = 0;
       let appliedCurvature = Number.NaN;
       let introIsComplete = !document.querySelector(".hero-intro-loader");
+      let heroIsVisible = true;
+      let documentIsVisible = !document.hidden;
+      let requestRender = () => {};
 
       const handleIntroComplete = () => {
         introIsComplete = true;
         lastFrameTime = 0;
+        requestRender();
       };
 
       window.addEventListener(HERO_INTRO_COMPLETE_EVENT, handleIntroComplete);
+
+      const handleDocumentVisibility = () => {
+        documentIsVisible = !document.hidden;
+        if (documentIsVisible) {
+          lastFrameTime = 0;
+          requestRender();
+        }
+      };
+
+      const heroVisibilityObserver = new IntersectionObserver(
+        ([entry]) => {
+          heroIsVisible = entry.isIntersecting;
+          if (heroIsVisible) {
+            lastFrameTime = 0;
+            requestRender();
+          }
+        },
+        { threshold: 0 },
+      );
+      heroVisibilityObserver.observe(heroSection);
+      document.addEventListener("visibilitychange", handleDocumentVisibility);
 
       camera.position.set(0, 0, isDesktop ? 18 : 16.5);
       masterGroup.add(spiralGroup);
@@ -318,14 +343,20 @@ export default function HeroOrbitScene({ images, title }) {
             );
 
       const render = (timestamp) => {
-        if (disposed) return;
-
-        frameId = window.requestAnimationFrame(render);
-        if (!introIsComplete) return;
+        frameId = 0;
+        if (
+          disposed ||
+          !introIsComplete ||
+          !heroIsVisible ||
+          !documentIsVisible
+        ) {
+          return;
+        }
         if (
           lastFrameTime &&
           timestamp - lastFrameTime < frameInterval
         ) {
+          requestRender();
           return;
         }
         lastFrameTime = timestamp;
@@ -430,10 +461,21 @@ export default function HeroOrbitScene({ images, title }) {
             : 0;
         });
         frontRenderer.render(scene, camera);
-
+        requestRender();
       };
 
-      render(performance.now());
+      requestRender = () => {
+        if (
+          !disposed &&
+          !frameId &&
+          introIsComplete &&
+          heroIsVisible &&
+          documentIsVisible
+        ) {
+          frameId = window.requestAnimationFrame(render);
+        }
+      };
+      requestRender();
 
       return () => {
         disposed = true;
@@ -444,6 +486,8 @@ export default function HeroOrbitScene({ images, title }) {
           HERO_INTRO_COMPLETE_EVENT,
           handleIntroComplete,
         );
+        document.removeEventListener("visibilitychange", handleDocumentVisibility);
+        heroVisibilityObserver.disconnect();
         scrollAnimation?.kill();
         resizeObserver.disconnect();
 
