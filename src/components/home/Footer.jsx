@@ -9,20 +9,28 @@ const contactDetails = [
   ["mail.svg", "admin@coloreyes.com"],
 ];
 
+const productContactDetails = [
+  contactDetails[0],
+  contactDetails[1],
+  ["mail.svg", "admin@vibhutiinsurance.com"],
+];
+
 const columnClasses =
   "flex flex-col items-start text-sm leading-6 text-[#444] [font-family:var(--font-manrope)]";
 
 const headingClasses =
   "mb-2.5 min-w-[85px] border-b-[1.4px] border-[#111] pb-2 text-base leading-7 font-normal text-[#020202] [font-family:var(--font-gabarito)]";
 
-export default function Footer() {
+export default function Footer({ productPage = false }) {
+  const displayedContactDetails = productPage ? productContactDetails : contactDetails;
+
   return (
-    <footer className="relative -mt-[167px] h-[963px] overflow-hidden bg-[#f7f7f7] px-[7vw] pt-[298px] max-[900px]:h-auto max-[900px]:min-h-[990px] max-[900px]:px-10 max-[640px]:-mt-[90px] max-[640px]:min-h-[1370px] max-[640px]:px-6 max-[640px]:pt-[180px]">
+    <footer className={`relative overflow-hidden bg-[#f7f7f7] px-[7vw] pt-20 max-[900px]:h-auto max-[900px]:min-h-[990px] max-[900px]:px-10 max-[640px]:min-h-[1370px] max-[640px]:px-6 max-[640px]:pt-20 ${productPage ? "h-[891px]" : "h-[770px]"}`}>
       <div className="grid w-full grid-cols-[1.3fr_.65fr_.65fr_1.15fr] gap-[clamp(48px,8vw,164px)] max-[1180px]:gap-14 max-[900px]:grid-cols-2 max-[900px]:gap-x-14 max-[900px]:gap-y-[54px] max-[640px]:grid-cols-1 max-[640px]:gap-[42px]">
         <section className={columnClasses}>
           <h2 className={headingClasses}>Contact Details</h2>
           <div>
-            {contactDetails.map(([icon, copy], index) => (
+            {displayedContactDetails.map(([icon, copy], index) => (
               <p
                 className={`mb-4 flex items-start gap-3.5 ${index === 0 ? "w-[282px] max-[640px]:w-full" : ""}`}
                 key={icon}
@@ -84,8 +92,8 @@ export default function Footer() {
           </form>
         </section>
       </div>
-      <FooterWordmark />
-      <p className="absolute right-[7vw] bottom-[35px] left-[7vw] m-0 border-t border-[#999] pt-5 text-center text-sm leading-5 text-[#111] [font-family:var(--font-manrope)] max-[640px]:right-6 max-[640px]:left-6">
+      <FooterWordmark productPage={productPage} />
+      <p className={`absolute right-[7vw] left-[7vw] m-0 border-t border-[#999] pt-5 text-center text-sm leading-5 text-[#111] [font-family:var(--font-manrope)] max-[640px]:right-6 max-[640px]:bottom-[35px] max-[640px]:left-6 ${productPage ? "top-[770px] max-[640px]:top-auto" : "bottom-[35px]"}`}>
         ColorEyes&nbsp; 2026. All rights reserved
       </p>
     </footer>

@@ -52,6 +52,31 @@ html:has(.hero-intro-loader) body {
   pointer-events: none;
 }
 
+.pdp-feature-marquee__track {
+  animation: pdp-feature-marquee-right 24s linear infinite;
+  will-change: transform;
+}
+
+.pdp-section-badge__icon {
+  animation: pdp-section-badge-rotate 4s linear infinite;
+}
+
+@keyframes pdp-section-badge-rotate {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes pdp-feature-marquee-right {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+
+  to {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
 @keyframes wavy-heading-lift {
   0%,
   100% {
@@ -65,6 +90,15 @@ html:has(.hero-intro-loader) body {
 
 @media (prefers-reduced-motion: reduce) {
   .wavy-heading:hover .wavy-heading__letter {
+    animation: none;
+  }
+
+  .pdp-feature-marquee__track {
+    animation: none;
+    transform: translate3d(0, 0, 0);
+  }
+
+  .pdp-section-badge__icon {
     animation: none;
   }
 }

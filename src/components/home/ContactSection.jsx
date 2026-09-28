@@ -6,7 +6,7 @@ import WaveHeadingText from "./WaveHeadingText";
 export default function ContactSection() {
   return (
     <section
-      className="relative z-[5] mx-auto -mt-60 flex h-[400px] w-[min(1282px,calc(100%-160px))] flex-col items-center overflow-hidden rounded-[20px] bg-[#0863bd] pt-[60px] text-white shadow-[0_1px_8px_rgba(7,75,90,0.15)] max-[1180px]:w-[calc(100%-80px)] max-[900px]:w-[calc(100%-48px)] max-[640px]:mt-4 max-[640px]:min-h-[470px] max-[640px]:w-[calc(100%-32px)] max-[640px]:px-5 max-[640px]:py-14 max-[640px]:text-center"
+      className="relative z-[5] mx-auto -mt-50 mb-16 flex h-[400px] w-[min(1282px,calc(100%-160px))] flex-col items-center overflow-hidden rounded-[20px] bg-[#0863bd] pt-[60px] pb-8 text-white shadow-[0_1px_8px_rgba(7,75,90,0.15)] max-[1180px]:w-[calc(100%-80px)] max-[900px]:w-[calc(100%-48px)] max-[640px]:mt-4 max-[640px]:mb-8 max-[640px]:min-h-[470px] max-[640px]:w-[calc(100%-32px)] max-[640px]:px-5 max-[640px]:py-14 max-[640px]:text-center"
       id="contact"
       aria-labelledby="contact-title"
     >

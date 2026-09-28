@@ -15,7 +15,7 @@ const links = [
   ["Contact Us", "#contact"],
 ];
 
-export default function Header() {
+export default function Header({ logoSrc = "/assets/logo.webp" }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   return (
@@ -27,7 +27,7 @@ export default function Header() {
       >
         <Image
           className="h-auto w-[147px] object-contain max-[900px]:w-[122px]"
-          src="/assets/logo.webp"
+          src={logoSrc}
           alt="ColorEyes Eyecare Pvt. Ltd."
           width={160}
           height={44}
