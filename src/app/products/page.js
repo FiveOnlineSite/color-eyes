@@ -237,8 +237,8 @@ export default function ProductListingPage() {
         <Image className="absolute top-[14px] right-[23px] h-[505px] w-[337px] object-cover max-[1000px]:right-[-60px] max-[760px]:top-[325px] max-[760px]:right-[-10px] max-[760px]:h-[360px] max-[760px]:w-[240px]" src="/assets/plp/bottle-large.png" alt="Model wearing coloured lenses" width={337} height={505} priority />
       </section>
 
-      <section className="relative mx-auto mt-9 h-[38px] w-[min(1280px,89%)] max-[1050px]:flex max-[1050px]:h-auto max-[1050px]:flex-wrap max-[1050px]:items-center max-[1050px]:justify-between max-[1050px]:gap-4 max-[760px]:grid max-[760px]:grid-cols-2 max-[760px]:gap-3">
-        <div className="absolute top-0 left-0 flex h-[38px] w-[299px] items-center gap-3 max-[1050px]:static max-[760px]:col-span-2 max-[760px]:h-11 max-[760px]:w-full max-[760px]:justify-start max-[760px]:overflow-x-auto max-[760px]:pb-1">
+      <section className="relative mx-auto mt-9 h-[38px] w-[min(1280px,89%)] max-[1180px]:flex max-[1180px]:h-auto max-[1180px]:flex-wrap max-[1180px]:items-center max-[1180px]:justify-between max-[1180px]:gap-4 max-[760px]:grid max-[760px]:grid-cols-2 max-[760px]:gap-3">
+        <div className="absolute top-0 left-0 flex h-[38px] w-[299px] items-center gap-3 max-[1180px]:static max-[760px]:col-span-2 max-[760px]:h-11 max-[760px]:w-full max-[760px]:justify-start max-[760px]:overflow-x-auto max-[760px]:pb-1">
           {productCategories.map((category) => {
             const [src, width, height] = category.logo;
             const isActive = activeCategoryId === category.id;
@@ -267,7 +267,7 @@ export default function ProductListingPage() {
             );
           })}
         </div>
-        <div className="absolute top-0 left-[315px] flex h-[38px] gap-[15px] max-[1050px]:static max-[760px]:contents">
+        <div className="absolute top-0 left-[330px] flex h-[38px] gap-[15px] max-[1180px]:static max-[760px]:contents">
           {filters.map((filter, index) => {
             const isPrice = filter === "Price";
             const isColor = filter === "Color";
@@ -375,7 +375,7 @@ export default function ProductListingPage() {
             );
           })}
         </div>
-        <div className="absolute top-0 right-0 h-[38px] w-[140px] max-[1050px]:static max-[760px]:col-span-2 max-[760px]:h-11 max-[760px]:w-full">
+        <div className="absolute top-0 right-0 h-[38px] w-[140px] max-[1180px]:static max-[760px]:col-span-2 max-[760px]:h-11 max-[760px]:w-full">
           <FilterButton
             active={Boolean(selectedSort)}
             aria-controls="sort-options"
