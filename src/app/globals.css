@@ -4,11 +4,6 @@
   --font-sans: var(--font-manrope);
 }
 
-html {
-  scroll-behavior: auto;
-  scrollbar-gutter: stable;
-}
-
 html.lenis,
 html.lenis body {
   height: auto;
@@ -36,12 +31,6 @@ html:has(.hero-intro-loader) body {
   overflow: hidden !important;
 }
 
-.wavy-heading__letter {
-  display: inline-block;
-  transform: translateY(0);
-  will-change: transform;
-}
-
 .wavy-heading:hover .wavy-heading__letter {
   animation: wavy-heading-lift 560ms cubic-bezier(0.22, 1, 0.36, 1) both;
   animation-delay: calc(var(--wave-index) * 14ms);
@@ -50,21 +39,6 @@ html:has(.hero-intro-loader) body {
 .client-stories-carousel .swiper-slide:not(.swiper-slide-active):not(.swiper-slide-prev):not(.swiper-slide-next) {
   visibility: hidden;
   pointer-events: none;
-}
-
-.pdp-feature-marquee__track {
-  animation: pdp-feature-marquee-right 24s linear infinite;
-  will-change: transform;
-}
-
-.section-badge__icon {
-  animation: section-badge-rotate 4s linear infinite;
-}
-
-@keyframes section-badge-rotate {
-  to {
-    transform: rotate(360deg);
-  }
 }
 
 @keyframes pdp-feature-marquee-right {
@@ -90,15 +64,6 @@ html:has(.hero-intro-loader) body {
 
 @media (prefers-reduced-motion: reduce) {
   .wavy-heading:hover .wavy-heading__letter {
-    animation: none;
-  }
-
-  .pdp-feature-marquee__track {
-    animation: none;
-    transform: translate3d(0, 0, 0);
-  }
-
-  .section-badge__icon {
     animation: none;
   }
 }

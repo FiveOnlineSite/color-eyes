@@ -13,22 +13,27 @@ export default function WaveHeadingText({ lines }) {
           <Fragment key={line}>
             {lineIndex > 0 ? <br /> : null}
             <span className={hasExplicitLines ? "inline-block whitespace-nowrap" : "contents"}>
-              {[...line].map((character, characterIndex) => {
-                if (character === " ") return " ";
+              {line.split(" ").map((word, wordIndex) => (
+                <Fragment key={`${lineIndex}-${wordIndex}-${word}`}>
+                  {wordIndex > 0 ? " " : null}
+                  <span className="inline-block whitespace-nowrap">
+                    {[...word].map((character, characterIndex) => {
+                      const waveIndex = letterIndex;
+                      letterIndex += 1;
 
-                const waveIndex = letterIndex;
-                letterIndex += 1;
-
-                return (
-                  <span
-                    className="wavy-heading__letter"
-                    key={`${lineIndex}-${characterIndex}`}
-                    style={{ "--wave-index": waveIndex }}
-                  >
-                    {character}
+                      return (
+                        <span
+                          className="wavy-heading__letter inline-block translate-y-0 will-change-transform"
+                          key={`${lineIndex}-${wordIndex}-${characterIndex}`}
+                          style={{ "--wave-index": waveIndex }}
+                        >
+                          {character}
+                        </span>
+                      );
+                    })}
                   </span>
-                );
-              })}
+                </Fragment>
+              ))}
             </span>
           </Fragment>
         ))}

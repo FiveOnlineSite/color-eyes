@@ -3,9 +3,14 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
+import { A11y, Autoplay, Keyboard, Pagination } from "swiper/modules";
+import { Swiper, SwiperSlide } from "swiper/react";
+import "swiper/css";
+import "swiper/css/pagination";
 
 import Footer from "@/components/home/Footer";
 import Header from "@/components/home/Header";
+import WaveHeadingText from "@/components/home/WaveHeadingText";
 
 const PDP_ASSET = "/assets/pdp";
 
@@ -41,7 +46,7 @@ function Asset({ file, alt, ...props }) {
 function SectionBadge({ children, white = false, asset = "98-828-imgImage.png" }) {
   return (
     <div className={`inline-flex h-10 items-center gap-2.5 rounded-full px-4 py-2 font-[family-name:var(--font-manrope)] text-sm leading-5 font-semibold text-black ${white ? "bg-white" : "bg-[#e3f1fc]"}`}>
-      <Asset className="section-badge__icon" file={asset} alt="" width={20} height={20} aria-hidden="true" />
+      <Asset className="size-5 animate-[spin_4s_linear_infinite] object-cover will-change-transform motion-reduce:animate-none" file={asset} alt="" width={20} height={20} aria-hidden="true" />
       <span>{children}</span>
     </div>
   );
@@ -57,30 +62,32 @@ function RoundAction({ children, href = "#", arrow = "98-828-imgImageArrowBlackI
 }
 
 function ProductHero({ product }) {
-  const [activeSlide, setActiveSlide] = useState(0);
-
   return (
     <section className="relative h-[546px] overflow-hidden bg-white max-[850px]:h-auto">
-      <div className="flex h-[546px] w-max transition-transform duration-500 ease-out max-[850px]:h-[420px]" style={{ transform: `translateX(-${activeSlide * 554}px)` }}>
-        {product.galleryImages.map(([file, alt]) => (
-          <div className="relative h-full w-[554px] shrink-0 border-r-4 border-white max-[850px]:w-[82vw]" key={file}>
-            <Asset file={file} className="object-cover" alt={alt} fill sizes="(max-width: 850px) 82vw, 554px" />
-          </div>
+      <Swiper
+        a11y={{ enabled: true }}
+        autoplay={{ delay: 3200, disableOnInteraction: false, pauseOnMouseEnter: true }}
+        className="pdp-product-gallery h-[546px] w-full overflow-hidden max-[850px]:h-[420px] [&_.swiper-pagination]:bottom-2! [&_.swiper-pagination]:left-0! [&_.swiper-pagination]:flex [&_.swiper-pagination]:w-[calc(100%-74px)]! [&_.swiper-pagination]:justify-center [&_.swiper-pagination]:gap-1.5 [&_.swiper-pagination]:py-3 max-[850px]:[&_.swiper-pagination]:w-full! [&_.swiper-pagination-bullet]:m-0! [&_.swiper-pagination-bullet]:size-2! [&_.swiper-pagination-bullet]:bg-[#666b7b]! [&_.swiper-pagination-bullet]:opacity-100! [&_.swiper-pagination-bullet-active]:bg-white!"
+        grabCursor
+        keyboard={{ enabled: true }}
+        loop
+        modules={[A11y, Autoplay, Keyboard, Pagination]}
+        pagination={{ clickable: true }}
+        slidesPerView="auto"
+        speed={700}
+      >
+        {product.galleryImages.map(([file, alt], index) => (
+          <SwiperSlide className="relative h-full! w-[554px]! border-r-4 border-white max-[850px]:w-[82vw]!" key={file}>
+            <Asset file={file} className="object-cover" alt={alt} fill preload={index === 0} sizes="(max-width: 850px) 82vw, 554px" />
+          </SwiperSlide>
         ))}
-      </div>
-      <div className="absolute bottom-2 left-0 z-10 flex w-[calc(100%-74px)] justify-center gap-1.5 py-3 max-[850px]:top-[386px] max-[850px]:bottom-auto max-[850px]:w-full">
-        {Array.from({ length: product.galleryDots }, (_, dot) => (
-          <button aria-label={`Go to product image ${dot + 1}`} className="grid size-2 place-items-center rounded-full" key={dot} onClick={() => setActiveSlide(dot)} type="button">
-            <span className={`block size-2 rounded-full ${dot === activeSlide ? "bg-white" : "bg-[#666b7b]"}`} />
-          </button>
-        ))}
-      </div>
-      <article className="absolute top-1/2 right-20 z-20 w-[530px] -translate-y-1/2 rounded-2xl bg-white p-6 shadow-[0_10px_25px_rgba(27,28,43,.05)] max-[1100px]:right-8 max-[850px]:relative max-[850px]:top-auto max-[850px]:right-auto max-[850px]:mx-auto max-[850px]:mt-[-24px] max-[850px]:mb-4 max-[850px]:w-[calc(100%_-_2rem)] max-[850px]:translate-y-0 max-[520px]:p-5">
+      </Swiper>
+      <article className="absolute top-1/2 right-20 z-20 w-[500px] -translate-y-1/2 rounded-2xl bg-white p-5 shadow-[0_10px_25px_rgba(27,28,43,.05)] max-[1100px]:right-8 max-[850px]:relative max-[850px]:top-auto max-[850px]:right-auto max-[850px]:mx-auto max-[850px]:mt-[-24px] max-[850px]:mb-4 max-[850px]:w-[calc(100%_-_2rem)] max-[850px]:translate-y-0">
         <div className="flex flex-col gap-5">
           <div className="flex flex-col gap-[18px]">
             <div className="flex flex-col gap-3">
               <p className="font-[family-name:var(--font-manrope)] text-base leading-[22.4px] text-[#68809a]">{product.productType}</p>
-              <div><h1 className="font-[family-name:var(--font-gabarito)] text-[32px] leading-10 font-semibold text-black max-[520px]:text-[28px] max-[520px]:leading-9">{product.name}</h1><p className="mt-2 font-[family-name:var(--font-manrope)] text-xs leading-[16.8px] text-[#666b7b]">{product.tagline}</p></div>
+              <div><h1 className="font-[family-name:var(--font-gabarito)] text-[32px] leading-10 font-semibold text-black max-[520px]:text-[28px] max-[520px]:leading-9"><WaveHeadingText lines={product.name} /></h1><p className="mt-2 font-[family-name:var(--font-manrope)] text-xs leading-[16.8px] text-[#666b7b]">{product.tagline}</p></div>
             </div>
             <div className="flex h-[25px] items-start gap-5 px-2 font-[family-name:var(--font-manrope)] text-sm leading-5 font-medium text-[#666b7b] max-[520px]:h-auto max-[520px]:flex-wrap max-[380px]:gap-x-3">
               {product.features.map((item) => <span className="flex items-center gap-[11px] whitespace-nowrap" key={item}><Asset file="98-652-imgEllipse291.svg" alt="" width={8} height={8} />{item}</span>)}
@@ -116,7 +123,7 @@ function ProductHero({ product }) {
 function FeatureMarquee({ features }) {
   return (
     <div className="h-12 overflow-hidden bg-gradient-to-r from-[#097890] to-[#03232a] font-[family-name:var(--font-manrope)] text-xl lowercase text-white max-[900px]:text-sm">
-      <div className="pdp-feature-marquee__track flex h-full w-max">
+      <div className="flex h-full w-max animate-[pdp-feature-marquee-right_24s_linear_infinite] will-change-transform motion-reduce:animate-none motion-reduce:[transform:translate3d(0,0,0)]">
         {[0, 1].map((copy) => (
           <div className="flex h-full shrink-0 items-center gap-8 pr-8 max-[900px]:gap-4 max-[900px]:pr-4" aria-hidden={copy === 1} key={copy}>
             {features.map((item) => (
@@ -250,7 +257,7 @@ function BeforeAfterSection({ product }) {
   return (
     <section className="relative mt-7 h-[930px] bg-white max-[850px]:h-auto max-[850px]:px-6 max-[850px]:py-14">
       <div className="absolute top-[60px] left-1/2 -translate-x-1/2 max-[850px]:static max-[850px]:mx-auto max-[850px]:w-fit max-[850px]:translate-x-0"><SectionBadge asset="98-813-imgImage.png">See the Difference</SectionBadge></div>
-      <h2 className="absolute top-[124px] left-1/2 w-[572px] -translate-x-1/2 text-center font-[family-name:var(--font-gabarito)] text-4xl leading-12 font-bold max-[850px]:static max-[850px]:mt-6 max-[850px]:w-auto max-[850px]:translate-x-0 max-[850px]:text-3xl">See the Change for Yourself</h2>
+      <h2 className="absolute top-[124px] left-1/2 w-[572px] -translate-x-1/2 text-center font-[family-name:var(--font-gabarito)] text-4xl leading-12 font-bold max-[850px]:static max-[850px]:mt-6 max-[850px]:w-auto max-[850px]:translate-x-0 max-[850px]:text-3xl"><WaveHeadingText lines="See the Change for Yourself" /></h2>
       <div className="absolute top-[220px] left-1/2 h-[710px] w-[min(1280px,89%)] -translate-x-1/2 overflow-hidden rounded-lg max-[850px]:relative max-[850px]:top-auto max-[850px]:left-auto max-[850px]:mt-9 max-[850px]:h-[480px] max-[850px]:w-full max-[850px]:translate-x-0">
         <Asset className="object-cover" file={product.beforeAfterImage} alt={`Before and after wearing ${product.name} lenses`} fill sizes="(max-width:850px) 100vw,1280px" />
         <span className="absolute top-16 left-16 font-[family-name:var(--font-gabarito)] text-base font-medium">Before</span>
@@ -279,7 +286,7 @@ function CareIcon({ file, layered }) {
 function CareSection() {
   return (
     <section className="relative mt-7 h-[803px] bg-[#097890] px-6 pt-[60px] text-white max-[1100px]:h-auto max-[1100px]:pb-16">
-      <div className="mx-auto w-fit"><SectionBadge asset="98-828-imgImage.png">Wear With Care</SectionBadge></div><h2 className="mt-6 text-center font-[family-name:var(--font-gabarito)] text-4xl leading-12 font-bold max-[650px]:text-3xl max-[650px]:leading-10">Simple Habits. Healthier Eyes.</h2><p className="mx-auto mt-5 w-[522px] text-center font-[family-name:var(--font-manrope)] text-base leading-6 max-[600px]:w-full">Follow a few essential steps to keep your lenses clean, comfortable and safe throughout everyday wear.</p>
+      <div className="mx-auto w-fit"><SectionBadge asset="98-828-imgImage.png">Wear With Care</SectionBadge></div><h2 className="mt-6 text-center font-[family-name:var(--font-gabarito)] text-4xl leading-12 font-bold max-[650px]:text-3xl max-[650px]:leading-10"><WaveHeadingText lines="Simple Habits. Healthier Eyes." /></h2><p className="mx-auto mt-5 w-[522px] text-center font-[family-name:var(--font-manrope)] text-base leading-6 max-[600px]:w-full">Follow a few essential steps to keep your lenses clean, comfortable and safe throughout everyday wear.</p>
       <div className="mx-auto mt-12 grid w-full max-w-[1282px] grid-cols-6 gap-5 max-[1100px]:grid-cols-3 max-[650px]:grid-cols-1 max-[650px]:gap-3">{careCards.map(([icon, title, copy, layered], index) => <article className="min-h-[287px] rounded-lg bg-[#f9fcfe] p-5 text-[#232323] shadow-[0_1px_14px_rgba(0,0,0,.16)] max-[650px]:min-h-0 max-[650px]:p-4" key={title}><CareIcon file={icon} layered={layered} /><h3 className={`${index === 0 || index === 4 ? "mt-5" : "mt-4"} whitespace-nowrap font-[family-name:var(--font-gabarito)] text-xl leading-[30px] font-semibold max-[650px]:mt-3`}>{title}</h3><p className={`${index === 0 ? "mt-[17px]" : "mt-3"} font-[family-name:var(--font-manrope)] text-sm leading-[22px] text-[#444] max-[650px]:mt-2`}>{copy}</p></article>)}</div>
       <div className="mx-auto mt-9 flex min-h-12 w-full max-w-[1282px] items-center gap-3 rounded bg-[#f0f7ff] px-[9px] font-[family-name:var(--font-manrope)] text-sm text-[#444] max-[650px]:items-start max-[650px]:px-4 max-[650px]:py-3"><span className="relative block size-8 shrink-0"><Asset className="absolute inset-0" file="98-828-imgEllipse281.svg" alt="" width={32} height={32} /><Asset className="absolute top-1.5 left-1.5" file="98-828-imgGroup2.svg" alt="" width={20} height={20} /></span>If you experience persistent redness, irritation, pain or blurred vision, remove the lenses and consult an eye-care professional.</div>
       <div className="mt-8 text-center"><RoundAction>Know Your Eyes</RoundAction></div>
@@ -300,7 +307,7 @@ function LensKnowledgeSection() {
     <section className="h-[454px] bg-gradient-to-t from-[rgba(242,251,253,.8)] to-50% to-white max-[1100px]:h-auto max-[1100px]:pb-16">
       <div className="mx-auto h-full w-full max-w-[1440px] px-20 pt-[60px] max-[850px]:px-6 max-[650px]:pt-12">
         <SectionBadge asset="98-922-imgImage.png">Lens Knowledge</SectionBadge>
-        <h2 className="mt-5 font-[family-name:var(--font-gabarito)] text-4xl leading-12 font-bold max-[650px]:text-3xl max-[650px]:leading-10">Understand The Lens Detail</h2>
+        <h2 className="mt-5 font-[family-name:var(--font-gabarito)] text-4xl leading-12 font-bold max-[650px]:text-3xl max-[650px]:leading-10"><WaveHeadingText lines="Understand The Lens Detail" /></h2>
         <p className="mt-5 font-[family-name:var(--font-manrope)] text-base leading-7 text-[#444] max-[650px]:text-sm max-[650px]:leading-6">Quick plain-language explanations of key terms to help you choose with confidence.</p>
         <div className="mt-12 grid w-full grid-cols-6 gap-5 max-[1280px]:gap-3 max-[1100px]:grid-cols-2 max-[1100px]:gap-4 max-[650px]:mt-8 max-[650px]:grid-cols-1 max-[650px]:gap-3">
           {lensTerms.map(([icon, title, tooltip], index) => {
@@ -354,7 +361,7 @@ function SellerSection({ product }) {
   return (
     <section className="h-[882px] bg-[#fcfcfc] px-20 pt-[60px] max-[1280px]:h-auto max-[1280px]:pb-16 max-[1050px]:px-6" id="seller">
       <div className="mx-auto w-fit"><SectionBadge asset="98-936-imgImage.png">Where to Buy</SectionBadge></div>
-      <h2 className="mt-6 text-center font-[family-name:var(--font-gabarito)] text-4xl leading-12 font-bold max-[650px]:text-3xl max-[650px]:leading-10">Find A Seller Near You</h2>
+      <h2 className="mt-6 text-center font-[family-name:var(--font-gabarito)] text-4xl leading-12 font-bold max-[650px]:text-3xl max-[650px]:leading-10"><WaveHeadingText lines="Find A Seller Near You" /></h2>
       <p className="mt-5 text-center font-[family-name:var(--font-manrope)] text-base leading-6 text-[#444]">Choose your state and city to discover authorized distributors carrying this product.</p>
       <div className="mt-12 grid grid-cols-[413px_1fr] gap-5 max-[1280px]:grid-cols-1">
         <aside className="h-[458px] rounded-xl bg-[#f0f7ff] p-6 shadow-[0_1px_12px_rgba(0,0,0,.1)]"><p className="font-[family-name:var(--font-gabarito)] text-base font-medium">Selected Product</p><div className="mt-4 flex h-16 items-center gap-3 rounded bg-white px-3"><Asset file="98-936-imgEllipse282.svg" alt="" width={32} height={32} /><span><b className="block font-[family-name:var(--font-gabarito)] text-sm font-medium">{product.selectedProductName}</b><small className="font-[family-name:var(--font-manrope)] text-xs text-[#444]">{product.selectedProductSubtitle}</small></span></div>{fields.map(([label, value, type]) => <label className="mt-4 block font-[family-name:var(--font-gabarito)] text-base font-medium" key={label}>{label}<span className="mt-3 flex h-12 items-center justify-between rounded bg-white px-3.5 font-[family-name:var(--font-manrope)] text-sm font-normal text-[#444]"><span className="flex items-center gap-3"><FieldIcon type={type} />{value}</span><Asset file="98-936-imgEpArrowDownBold.svg" alt="" width={16} height={16} /></span></label>)}</aside>
@@ -400,11 +407,11 @@ function SellerSection({ product }) {
 
 function FaqSection({ faqs }) {
   const [open, setOpen] = useState(0);
-  return <section className="grid h-[484px] grid-cols-[minmax(320px,500px)_minmax(0,740px)] gap-10 bg-[#fcfcfc] px-20 pt-[60px] max-[1050px]:h-auto max-[1050px]:grid-cols-1 max-[1050px]:px-6 max-[1050px]:pb-16 max-[600px]:gap-8 max-[600px]:pt-12 max-[600px]:pb-12"><div><SectionBadge asset="98-1043-imgImage.png">Need to Know</SectionBadge><h2 className="mt-1 max-w-[416px] font-[family-name:var(--font-gabarito)] text-4xl leading-12 font-semibold text-[#232323] max-[600px]:mt-3 max-[600px]:text-3xl max-[600px]:leading-10">Questions, Clearly Answered.</h2></div><div className="min-w-0 space-y-3 pt-4 max-[600px]:space-y-2.5 max-[600px]:pt-0">{faqs.map(([question, answer], index) => <article className="w-full rounded bg-white shadow-[0_1px_12px_rgba(0,0,0,.08)] max-[600px]:rounded-lg" key={question}><button aria-expanded={open === index} className="flex min-h-[60px] w-full items-center justify-between gap-3 px-3 text-left font-[family-name:var(--font-gabarito)] text-xl leading-9 font-medium text-[#232323] max-[600px]:min-h-14 max-[600px]:px-4 max-[600px]:py-3 max-[600px]:text-base max-[600px]:leading-6" onClick={() => setOpen(open === index ? -1 : index)} type="button"><span className="min-w-0">{index + 1}.&nbsp; {question}</span><Asset file={open === index ? "98-1043-imgArrowDownSLine1.svg" : "98-1043-imgArrowDownSLine.svg"} className={`shrink-0 transition-transform duration-200 ${open === index ? "rotate-180" : ""}`} alt="" width={24} height={24} /></button>{open === index && <p className="px-11 pb-4 font-[family-name:var(--font-manrope)] text-base leading-7 text-[#444] max-[600px]:px-4 max-[600px]:pb-4 max-[600px]:text-sm max-[600px]:leading-6">{answer}</p>}</article>)}</div></section>;
+  return <section className="grid h-[484px] grid-cols-[minmax(320px,500px)_minmax(0,740px)] gap-10 bg-[#fcfcfc] px-20 pt-[60px] max-[1050px]:h-auto max-[1050px]:grid-cols-1 max-[1050px]:px-6 max-[1050px]:pb-16 max-[600px]:gap-8 max-[600px]:pt-12 max-[600px]:pb-12"><div><SectionBadge asset="98-1043-imgImage.png">Need to Know</SectionBadge><h2 className="mt-1 max-w-[416px] font-[family-name:var(--font-gabarito)] text-4xl leading-12 font-semibold text-[#232323] max-[600px]:mt-3 max-[600px]:text-3xl max-[600px]:leading-10"><WaveHeadingText lines={["Questions, Clearly", "Answered."]} /></h2></div><div className="min-w-0 space-y-3 pt-4 max-[600px]:space-y-2.5 max-[600px]:pt-0">{faqs.map(([question, answer], index) => <article className="w-full rounded bg-white shadow-[0_1px_12px_rgba(0,0,0,.08)] max-[600px]:rounded-lg" key={question}><button aria-expanded={open === index} className="flex min-h-[60px] w-full items-center justify-between gap-3 px-3 text-left font-[family-name:var(--font-gabarito)] text-xl leading-9 font-medium text-[#232323] max-[600px]:min-h-14 max-[600px]:px-4 max-[600px]:py-3 max-[600px]:text-base max-[600px]:leading-6" onClick={() => setOpen(open === index ? -1 : index)} type="button"><span className="min-w-0">{index + 1}.&nbsp; {question}</span><Asset file={open === index ? "98-1043-imgArrowDownSLine1.svg" : "98-1043-imgArrowDownSLine.svg"} className={`shrink-0 transition-transform duration-200 ${open === index ? "rotate-180" : ""}`} alt="" width={24} height={24} /></button>{open === index && <p className="px-11 pb-4 font-[family-name:var(--font-manrope)] text-base leading-7 text-[#444] max-[600px]:px-4 max-[600px]:pb-4 max-[600px]:text-sm max-[600px]:leading-6">{answer}</p>}</article>)}</div></section>;
 }
 
 function ReviewSection() {
-  return <section className="relative h-[360px] overflow-hidden bg-[#f0f7ff] px-20 pt-[60px] max-[700px]:h-[680px] max-[700px]:px-6"><SectionBadge white asset="98-1071-imgImage.png">Write your review</SectionBadge><h2 className="mt-5 font-[family-name:var(--font-gabarito)] text-4xl leading-12 font-bold max-[700px]:text-3xl max-[700px]:leading-10">Your Experience Matters</h2><p className="mt-4 font-[family-name:var(--font-manrope)] text-base leading-6 max-[700px]:max-w-[310px] max-[700px]:text-sm">Share your insights to assist others in making informed decisions.</p><div className="mt-10 max-[700px]:mt-8"><RoundAction arrow="98-1071-imgImageArrowBlackIconSvgBlack.svg">Write a Review</RoundAction></div><div className="absolute top-0 right-0 h-[438px] w-[488px] overflow-hidden max-[900px]:right-[-100px] max-[700px]:top-auto max-[700px]:right-0 max-[700px]:bottom-0 max-[700px]:h-[310px] max-[700px]:w-full"><Asset className="absolute top-[-5.85%] left-[-60.11%] h-[118.78%] w-[160.06%] max-w-none max-[700px]:top-0 max-[700px]:left-[calc(50%-245px)] max-[700px]:h-[310px] max-[700px]:w-[475px]" file="98-1071-imgRectangle2.png" alt="Customer wearing coloured lenses" width={781} height={520} /></div></section>;
+  return <section className="relative h-[360px] overflow-hidden bg-[#f0f7ff] px-20 pt-[60px] max-[700px]:h-[680px] max-[700px]:px-6"><SectionBadge white asset="98-1071-imgImage.png">Write your review</SectionBadge><h2 className="mt-5 font-[family-name:var(--font-gabarito)] text-4xl leading-12 font-bold max-[700px]:text-3xl max-[700px]:leading-10"><WaveHeadingText lines="Your Experience Matters" /></h2><p className="mt-4 font-[family-name:var(--font-manrope)] text-base leading-6 max-[700px]:max-w-[310px] max-[700px]:text-sm">Share your insights to assist others in making informed decisions.</p><div className="mt-10 max-[700px]:mt-8"><RoundAction arrow="98-1071-imgImageArrowBlackIconSvgBlack.svg">Write a Review</RoundAction></div><div className="absolute top-0 right-0 h-[438px] w-[488px] overflow-hidden max-[900px]:right-[-100px] max-[700px]:top-auto max-[700px]:right-0 max-[700px]:bottom-0 max-[700px]:h-[310px] max-[700px]:w-full"><Asset className="absolute top-[-5.85%] left-[-60.11%] h-[118.78%] w-[160.06%] max-w-none max-[700px]:top-0 max-[700px]:left-[calc(50%-245px)] max-[700px]:h-[310px] max-[700px]:w-[475px]" file="98-1071-imgRectangle2.png" alt="Customer wearing coloured lenses" width={781} height={520} /></div></section>;
 }
 
 function RelatedProductCard({ product }) {
@@ -412,7 +419,7 @@ function RelatedProductCard({ product }) {
 }
 
 function RelatedProductsSection({ products }) {
-  return <section className="h-[811px] bg-[#fcfcfc] px-20 pt-[60px] max-[1050px]:h-auto max-[1050px]:px-6 max-[1050px]:pb-16"><SectionBadge asset="98-1088-imgImage.png">Discover More</SectionBadge><h2 className="mt-1 font-[family-name:var(--font-gabarito)] text-4xl leading-12 font-semibold text-[#232323] max-[560px]:mt-3 max-[560px]:text-3xl max-[560px]:leading-10">More Products To Explore</h2><div className="mt-12 grid grid-cols-4 gap-[18px] max-[1050px]:grid-cols-2 max-[560px]:mt-8 max-[560px]:gap-3">{products.map((relatedProduct, index) => <RelatedProductCard product={relatedProduct} key={`${relatedProduct.href}-${index}`} />)}</div></section>;
+  return <section className="h-[811px] bg-[#fcfcfc] px-20 pt-[60px] max-[1050px]:h-auto max-[1050px]:px-6 max-[1050px]:pb-16"><SectionBadge asset="98-1088-imgImage.png">Discover More</SectionBadge><h2 className="mt-1 font-[family-name:var(--font-gabarito)] text-4xl leading-12 font-semibold text-[#232323] max-[560px]:mt-3 max-[560px]:text-3xl max-[560px]:leading-10"><WaveHeadingText lines="More Products To Explore" /></h2><div className="mt-12 grid grid-cols-4 gap-[18px] max-[1050px]:grid-cols-2 max-[560px]:mt-8 max-[560px]:gap-3">{products.map((relatedProduct, index) => <RelatedProductCard product={relatedProduct} key={`${relatedProduct.href}-${index}`} />)}</div></section>;
 }
 
 export default function ProductDetailPage({ product }) {

@@ -34,7 +34,7 @@ export default function RootLayout({ children }) {
   return (
     <html
       lang="en"
-      className={`${gabarito.variable} ${manrope.variable} ${oswald.variable} ${roboto.variable}`}
+      className={`${gabarito.variable} ${manrope.variable} ${oswald.variable} ${roboto.variable} scroll-auto [scrollbar-gutter:stable]`}
     >
       <body className="min-w-80 overflow-x-hidden bg-[#fafafa] text-[#171717] [font-family:var(--font-manrope)]">
         {children}

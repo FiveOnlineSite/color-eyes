@@ -198,9 +198,15 @@ const productVariantColors = {
 const slugify = (value) => value.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
 
 const defaultGallery = [
-  ["/assets/figma-product/slide-4.png", "Contact lens"],
-  ["/assets/figma-product/slide-3.png", "Model wearing contact lenses"],
-  ["/assets/figma-product/slide-1.png", "Contact lens close-up"],
+  ["98-652-imgImageHoneycombHazelPackOf2Bundle.png", "Contact lens product view"],
+  ["98-652-imgImageHoneycombHazel.png", "Model wearing contact lenses"],
+  ["98-652-imgImageHoneycombHazel1.png", "Contact lens portrait"],
+  ["98-652-imgImageHoneycombHazel2-no-seam.png", "Contact lens portrait close-up"],
+  ["98-652-imgImageHoneycombHazel3.png", "Contact lens lifestyle view"],
+  ["98-652-imgImageHoneycombHazel4.png", "Contact lens close-up"],
+  ["98-652-imgImageHoneycombHazelPackOf2Bundle1.png", "Contact lens product bundle"],
+  ["98-652-imgImageHoneycombHazel5.png", "Contact lens portrait view"],
+  ["98-652-imgImageHoneycombHazel6.png", "Contact lens portrait detail"],
 ];
 
 const defaultFeatures = ["Natural Look", "Comfortable Wear", "Power Available"];
@@ -243,7 +249,6 @@ function createProduct(name, category, price) {
     featuredImage: productFeaturedImages[name] ?? null,
     powerRange: productPowerRanges[name] ?? null,
     galleryImages: defaultGallery,
-    galleryDots: 3,
     features: productFeatures[name] ?? defaultFeatures,
     hasColorVariants,
     shadeCount: variantColors?.length ?? 5,
@@ -275,18 +280,6 @@ const celebrationToricGrey = {
   productType: "Coloured Contact Lenses",
   tagline: "Grey that shines and make you stand out.",
   note: "For 6 months use only.",
-  galleryImages: [
-    ["98-652-imgImageHoneycombHazelPackOf2Bundle.png", "A clear contact lens"],
-    ["98-652-imgImageHoneycombHazel.png", "Model wearing Celebration Toric Grey lenses"],
-    ["98-652-imgImageHoneycombHazel1.png", "Celebration Toric Grey lens close-up"],
-    ["98-652-imgImageHoneycombHazel2.png", "Celebration Toric Grey product view"],
-    ["98-652-imgImageHoneycombHazel3.png", "Celebration Toric Grey lifestyle view"],
-    ["98-652-imgImageHoneycombHazel4.png", "Celebration Toric Grey close-up"],
-    ["98-652-imgImageHoneycombHazelPackOf2Bundle1.png", "Celebration Toric Grey bundle"],
-    ["98-652-imgImageHoneycombHazel5.png", "Celebration Toric Grey portrait"],
-    ["98-652-imgImageHoneycombHazel6.png", "Celebration Toric Grey portrait detail"],
-  ],
-  galleryDots: 6,
   description: "A dimensional grey coloured contact lens designed to add soft depth while maintaining a natural, expressive look.",
   selectedProductName: "Celebration Color Lenses",
   selectedProductSubtitle: "Premium Colored Contact Lenses",
