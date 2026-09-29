@@ -41,7 +41,7 @@ function Asset({ file, alt, ...props }) {
 function SectionBadge({ children, white = false, asset = "98-828-imgImage.png" }) {
   return (
     <div className={`inline-flex h-10 items-center gap-2.5 rounded-full px-4 py-2 font-[family-name:var(--font-manrope)] text-sm leading-5 font-semibold text-black ${white ? "bg-white" : "bg-[#e3f1fc]"}`}>
-      <Asset className="pdp-section-badge__icon" file={asset} alt="" width={20} height={20} aria-hidden="true" />
+      <Asset className="section-badge__icon" file={asset} alt="" width={20} height={20} aria-hidden="true" />
       <span>{children}</span>
     </div>
   );

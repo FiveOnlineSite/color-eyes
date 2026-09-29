@@ -57,11 +57,11 @@ html:has(.hero-intro-loader) body {
   will-change: transform;
 }
 
-.pdp-section-badge__icon {
-  animation: pdp-section-badge-rotate 4s linear infinite;
+.section-badge__icon {
+  animation: section-badge-rotate 4s linear infinite;
 }
 
-@keyframes pdp-section-badge-rotate {
+@keyframes section-badge-rotate {
   to {
     transform: rotate(360deg);
   }
@@ -98,7 +98,7 @@ html:has(.hero-intro-loader) body {
     transform: translate3d(0, 0, 0);
   }
 
-  .pdp-section-badge__icon {
+  .section-badge__icon {
     animation: none;
   }
 }
