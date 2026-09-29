@@ -75,8 +75,8 @@ function ProductCard({ product = fallbackProduct }) {
   const [selectedVariant, setSelectedVariant] = useState("");
 
   return (
-    <article className="relative h-[549px] max-[560px]:h-[510px]">
-      <div className="absolute top-0 left-0 h-[307px] w-full overflow-hidden rounded-lg border border-[#666]/20 max-[560px]:h-[220px]">
+    <article className="relative h-[549px] max-[560px]:flex max-[560px]:h-auto max-[560px]:flex-col">
+      <div className="absolute top-0 left-0 h-[307px] w-full overflow-hidden rounded-lg border border-[#666]/20 max-[560px]:relative max-[560px]:top-auto max-[560px]:left-auto max-[560px]:h-[220px] max-[560px]:shrink-0">
         {displayedSprite ? (
           <div className="absolute inset-0 grid place-items-center bg-white p-3">
             <div className="relative aspect-[323.25/249] w-full overflow-hidden">
@@ -100,7 +100,7 @@ function ProductCard({ product = fallbackProduct }) {
           <Image className={displayedImage === product.featuredImage ? "object-contain p-3" : "object-cover"} src={displayedImage} alt={selectedVariant ? `${product.name} in ${selectedVariant}` : product.name} fill sizes="(max-width: 900px) 44vw, 307px" />
         )}
       </div>
-      <div className="absolute top-[327px] left-3 max-[560px]:top-[238px] max-[560px]:right-2 max-[560px]:left-2">
+      <div className="absolute top-[327px] left-3 max-[560px]:relative max-[560px]:top-auto max-[560px]:right-auto max-[560px]:left-auto max-[560px]:mx-2 max-[560px]:mt-4">
         <h3 className="text-base font-bold leading-6 text-[#232323] max-[560px]:min-h-[60px] max-[560px]:text-sm max-[560px]:leading-5">{product.name}</h3>
         <p className="mt-1 font-[family-name:var(--font-manrope)] text-xs leading-5 text-[#666] max-[560px]:text-[11px] max-[560px]:leading-4">{product.note}</p>
         <div>
@@ -144,7 +144,7 @@ function ProductCard({ product = fallbackProduct }) {
         </div>
         <p className="mt-3 text-xl font-medium leading-[30px] text-[#097890] max-[560px]:text-lg">{product.price}</p>
       </div>
-      <Link className="absolute bottom-0 left-0 grid h-11 w-full place-items-center rounded bg-[#1893ae] font-[family-name:var(--font-manrope)] text-base font-semibold text-white transition hover:bg-[#117f97] max-[560px]:text-sm" href={`/products/${product.slug}`}>
+      <Link className="absolute bottom-0 left-0 grid h-11 w-full place-items-center rounded bg-[#1893ae] font-[family-name:var(--font-manrope)] text-base font-semibold text-white transition hover:bg-[#117f97] max-[560px]:relative max-[560px]:bottom-auto max-[560px]:left-auto max-[560px]:mt-4 max-[560px]:shrink-0 max-[560px]:text-sm" href={`/products/${product.slug}`}>
         View Details
       </Link>
     </article>

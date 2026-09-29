@@ -75,37 +75,35 @@ function ProductHero({ product }) {
           </button>
         ))}
       </div>
-      <article className="absolute top-1/2 right-20 z-20 w-[530px] -translate-y-1/2 rounded-2xl bg-white p-6 shadow-[0_10px_25px_rgba(27,28,43,.05)] max-[1100px]:right-8 max-[850px]:relative max-[850px]:top-auto max-[850px]:right-auto max-[850px]:m-4 max-[850px]:mt-[-24px] max-[850px]:w-auto max-[850px]:translate-y-0">
+      <article className="absolute top-1/2 right-20 z-20 w-[530px] -translate-y-1/2 rounded-2xl bg-white p-6 shadow-[0_10px_25px_rgba(27,28,43,.05)] max-[1100px]:right-8 max-[850px]:relative max-[850px]:top-auto max-[850px]:right-auto max-[850px]:mx-auto max-[850px]:mt-[-24px] max-[850px]:mb-4 max-[850px]:w-[calc(100%_-_2rem)] max-[850px]:translate-y-0 max-[520px]:p-5">
         <div className="flex flex-col gap-5">
           <div className="flex flex-col gap-[18px]">
             <div className="flex flex-col gap-3">
               <p className="font-[family-name:var(--font-manrope)] text-base leading-[22.4px] text-[#68809a]">{product.productType}</p>
               <div><h1 className="font-[family-name:var(--font-gabarito)] text-[32px] leading-10 font-semibold text-black max-[520px]:text-[28px] max-[520px]:leading-9">{product.name}</h1><p className="mt-2 font-[family-name:var(--font-manrope)] text-xs leading-[16.8px] text-[#666b7b]">{product.tagline}</p></div>
             </div>
-            <div className="flex h-[25px] items-start gap-5 px-2 font-[family-name:var(--font-manrope)] text-sm leading-5 font-medium text-[#666b7b] max-[520px]:h-auto max-[520px]:flex-wrap">
+            <div className="flex h-[25px] items-start gap-5 px-2 font-[family-name:var(--font-manrope)] text-sm leading-5 font-medium text-[#666b7b] max-[520px]:h-auto max-[520px]:flex-wrap max-[380px]:gap-x-3">
               {product.features.map((item) => <span className="flex items-center gap-[11px] whitespace-nowrap" key={item}><Asset file="98-652-imgEllipse291.svg" alt="" width={8} height={8} />{item}</span>)}
             </div>
           </div>
           <div className={product.hasColorVariants ? "" : "invisible"} aria-hidden={!product.hasColorVariants}>
             <p className="font-[family-name:var(--font-gabarito)] text-sm leading-5 font-medium">Available in {product.shadeCount} Shades</p>
-            <div className="mt-3 flex gap-4">
+            <div className="mt-3 flex flex-wrap items-center gap-3">
               {product.variantColors
                 ? product.variantColors.map(([name, color], index) => (
-                    <button className="relative size-10" aria-label={`Choose ${name}`} key={name} title={name} type="button">
-                      <Asset file={index === 0 ? "98-652-imgEllipse277.svg" : "98-652-imgEllipse279.svg"} className="absolute inset-0" alt="" width={40} height={40} />
-                      <span className="absolute inset-0.5 rounded-full" style={{ backgroundColor: color }} />
+                    <button className={`grid size-10 shrink-0 place-items-center rounded-full border ${index === 0 ? "border-[#097890]" : "border-[#666]/60"}`} aria-label={`Choose ${name}`} key={name} title={name} type="button">
+                      <span className="size-9 rounded-full" style={{ backgroundColor: color }} />
                     </button>
                   ))
                 : Array.from({ length: product.shadeCount }, (_, index) => (
-                    <button className="relative size-10" aria-label={`Choose shade ${index + 1}`} key={index} type="button">
-                      <Asset file={index === 0 ? "98-652-imgEllipse277.svg" : "98-652-imgEllipse279.svg"} className="absolute inset-0" alt="" width={40} height={40} />
-                      <Asset file="98-652-imgEllipse278.png" className="absolute top-0.5 left-0.5" alt="" width={36} height={36} />
+                    <button className={`grid size-10 shrink-0 place-items-center rounded-full border ${index === 0 ? "border-[#097890]" : "border-[#666]/60"}`} aria-label={`Choose shade ${index + 1}`} key={index} type="button">
+                      <Asset file="98-652-imgEllipse278.png" className="size-9 rounded-full object-cover" alt="" width={36} height={36} />
                     </button>
                   ))}
             </div>
           </div>
           <div>
-            <div className="flex items-center justify-between"><strong className="font-[family-name:var(--font-gabarito)] text-2xl leading-9 font-semibold text-[#097890]">{product.price}</strong><div className="flex items-center gap-2 font-[family-name:var(--font-gabarito)] text-base leading-6 font-medium"><span>{product.rating}/5</span><Asset file="98-652-imgFrame150.svg" alt={`${product.rating} out of five stars`} width={116} height={20} /></div></div>
+            <div className="flex items-center justify-between gap-3"><strong className="shrink-0 font-[family-name:var(--font-gabarito)] text-2xl leading-9 font-semibold text-[#097890]">{product.price}</strong><div className="flex min-w-0 items-center gap-2 font-[family-name:var(--font-gabarito)] text-base leading-6 font-medium"><span className="shrink-0">{product.rating}/5</span><Asset file="98-652-imgFrame150.svg" className="h-auto max-w-full" alt={`${product.rating} out of five stars`} width={116} height={20} /></div></div>
             <p className="font-[family-name:var(--font-manrope)] text-[13.6px] leading-[19px] text-black/70">{product.note}</p>
           </div>
         </div>
@@ -410,7 +408,7 @@ function ReviewSection() {
 }
 
 function RelatedProductCard({ product }) {
-  return <article className="relative h-[549px] max-[560px]:h-[500px]"><div className="relative h-[307px] overflow-hidden rounded-lg border border-[#666]/20 max-[560px]:h-[220px]"><Asset className="object-cover" file={product.image} alt={product.imageAlt} fill sizes="(max-width:560px) 44vw,307px" /></div><h3 className="mt-4 ml-3 font-[family-name:var(--font-gabarito)] text-base leading-6 font-medium text-[#232323] max-[560px]:mr-2 max-[560px]:min-h-10 max-[560px]:text-sm max-[560px]:leading-5">{product.name}</h3><p className="ml-3 font-[family-name:var(--font-manrope)] text-xs leading-5 text-[#666] max-[560px]:mr-2 max-[560px]:text-[11px] max-[560px]:leading-4">{product.note}</p><p className="mt-2 ml-3 font-[family-name:var(--font-manrope)] text-xs leading-5 text-[#666] max-[560px]:text-[11px]">Available Variants</p><Asset className="mt-2 ml-3 max-[560px]:max-w-[calc(100%-20px)]" file={product.variantsImage} alt="Available colour variants" width={104} height={22} /><p className="mt-3 ml-3 font-[family-name:var(--font-gabarito)] text-xl leading-[30px] font-medium text-[#097890] max-[560px]:text-lg">{product.price}</p><Link className="absolute bottom-0 left-0 grid h-11 w-full place-items-center rounded bg-[#1893ae] font-[family-name:var(--font-manrope)] text-base font-semibold text-white max-[560px]:text-sm" href={product.href}>View Details</Link></article>;
+  return <article className="flex h-[549px] flex-col max-[560px]:h-auto"><div className="relative h-[307px] shrink-0 overflow-hidden rounded-lg border border-[#666]/20 max-[560px]:h-[220px]"><Asset className="object-cover" file={product.image} alt={product.imageAlt} fill sizes="(max-width:560px) 44vw,307px" /></div><h3 className="mt-4 ml-3 font-[family-name:var(--font-gabarito)] text-base leading-6 font-medium text-[#232323] max-[560px]:mr-2 max-[560px]:min-h-10 max-[560px]:text-sm max-[560px]:leading-5">{product.name}</h3><p className="ml-3 font-[family-name:var(--font-manrope)] text-xs leading-5 text-[#666] max-[560px]:mr-2 max-[560px]:text-[11px] max-[560px]:leading-4">{product.note}</p><p className="mt-2 ml-3 font-[family-name:var(--font-manrope)] text-xs leading-5 text-[#666] max-[560px]:text-[11px]">Available Variants</p><Asset className="mt-2 ml-3 max-[560px]:max-w-[calc(100%-20px)]" file={product.variantsImage} alt="Available colour variants" width={104} height={22} /><p className="mt-3 ml-3 font-[family-name:var(--font-gabarito)] text-xl leading-[30px] font-medium text-[#097890] max-[560px]:text-lg">{product.price}</p><Link className="mt-auto grid h-11 w-full shrink-0 place-items-center rounded bg-[#1893ae] font-[family-name:var(--font-manrope)] text-base font-semibold text-white max-[560px]:mt-4 max-[560px]:text-sm" href={product.href}>View Details</Link></article>;
 }
 
 function RelatedProductsSection({ products }) {
