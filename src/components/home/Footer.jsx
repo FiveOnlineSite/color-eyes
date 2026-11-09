@@ -21,11 +21,11 @@ const columnClasses =
 const headingClasses =
   "mb-2.5 min-w-[85px] border-b-[1.4px] border-[#111] pb-2 text-base leading-7 font-normal text-[#020202] [font-family:var(--font-gabarito)]";
 
-export default function Footer({ productPage = false }) {
+export default function Footer({ productPage = false, aboutPage = false, homePath = "" }) {
   const displayedContactDetails = productPage ? productContactDetails : contactDetails;
 
   return (
-    <footer className={`relative overflow-hidden bg-[#f7f7f7] px-[7vw] pt-20 max-[900px]:h-auto max-[900px]:min-h-[990px] max-[900px]:px-10 max-[640px]:min-h-[1370px] max-[640px]:px-6 max-[640px]:pt-20 ${productPage ? "h-[891px]" : "h-[770px]"}`}>
+    <footer className={`relative overflow-hidden bg-[#f7f7f7] px-[7vw] max-[900px]:h-auto max-[900px]:min-h-[990px] max-[900px]:px-10 max-[640px]:min-h-[1370px] max-[640px]:px-6 max-[640px]:pt-20 ${aboutPage ? "h-[1073px] pt-[298px] max-[900px]:pt-[298px] max-[640px]:pt-[300px]" : `pt-20 ${productPage ? "h-[891px]" : "h-[770px]"}`}`}>
       <div className="grid w-full grid-cols-[1.3fr_.65fr_.65fr_1.15fr] gap-[clamp(48px,8vw,164px)] max-[1180px]:gap-14 max-[900px]:grid-cols-2 max-[900px]:gap-x-14 max-[900px]:gap-y-[54px] max-[640px]:grid-cols-1 max-[640px]:gap-[42px]">
         <section className={columnClasses}>
           <h2 className={headingClasses}>Contact Details</h2>
@@ -58,16 +58,16 @@ export default function Footer({ productPage = false }) {
         </section>
         <section className={`${columnClasses} [&>a]:mb-2`}>
           <h2 className={headingClasses}>Quick Link</h2>
-          <Link href="#home">Home</Link>
-          <Link href="#about">About</Link>
-          <Link href="#eye-care">FAQs</Link>
-          <Link href="#contact">Contact Us</Link>
+          <Link href={`${homePath}#home`}>Home</Link>
+          <Link href="/about-us">About</Link>
+          <Link href={`${homePath}#eye-care`}>FAQs</Link>
+          <Link href={`${homePath}#contact`}>Contact Us</Link>
         </section>
         <section className={`${columnClasses} [&>a]:mb-2`}>
           <h2 className={headingClasses}>Brands</h2>
-          <Link href="#brands">Celebration</Link>
-          <Link href="#brands">Polylite</Link>
-          <Link href="#brands">Clear Thin</Link>
+          <Link href={`${homePath}#brands`}>Celebration</Link>
+          <Link href={`${homePath}#brands`}>Polylite</Link>
+          <Link href={`${homePath}#brands`}>Clear Thin</Link>
         </section>
         <section className={`${columnClasses} max-w-[296px] max-[640px]:w-full max-[640px]:max-w-none`}>
           <h2 className={`${headingClasses} min-w-[154px]`}>Newsletter Sign-up</h2>
@@ -92,8 +92,8 @@ export default function Footer({ productPage = false }) {
           </form>
         </section>
       </div>
-      <FooterWordmark productPage={productPage} />
-      <p className={`absolute right-[7vw] left-[7vw] m-0 border-t border-[#999] pt-5 text-center text-sm leading-5 text-[#111] [font-family:var(--font-manrope)] max-[640px]:right-6 max-[640px]:bottom-[35px] max-[640px]:left-6 ${productPage ? "top-[770px] max-[640px]:top-auto" : "bottom-[35px]"}`}>
+      <FooterWordmark productPage={productPage} aboutPage={aboutPage} />
+      <p className={`absolute right-[7vw] left-[7vw] m-0 border-t border-[#999] pt-5 text-center text-sm leading-5 text-[#111] [font-family:var(--font-manrope)] max-[640px]:right-6 max-[640px]:bottom-[35px] max-[640px]:left-6 ${productPage ? "top-[770px] max-[640px]:top-auto" : aboutPage ? "bottom-[44px]" : "bottom-[35px]"}`}>
         ColorEyes&nbsp; 2026. All rights reserved
       </p>
     </footer>

@@ -51,6 +51,16 @@ html:has(.hero-intro-loader) body {
   }
 }
 
+@keyframes quality-progress {
+  from {
+    transform: scaleX(0);
+  }
+
+  to {
+    transform: scaleX(1);
+  }
+}
+
 @keyframes wavy-heading-lift {
   0%,
   100% {

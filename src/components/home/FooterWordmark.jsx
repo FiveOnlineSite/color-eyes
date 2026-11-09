@@ -17,7 +17,7 @@ const letters = [
 const RESTING_COLOR = "#666666";
 const MAX_HOVER_OFFSET = 48;
 
-export default function FooterWordmark({ productPage = false }) {
+export default function FooterWordmark({ productPage = false, aboutPage = false }) {
   const letterRefs = useRef([]);
   const wordRef = useRef(null);
   const frameRef = useRef(null);
@@ -128,12 +128,12 @@ export default function FooterWordmark({ productPage = false }) {
     };
   }, []);
 
-  if (productPage) {
+  if (productPage || aboutPage) {
     return (
       <div
         aria-label="Coloreyes"
         role="img"
-        className="absolute top-[430px] right-0 left-0 m-0 bg-clip-text text-center text-[244px] leading-[340px] font-extrabold tracking-[2.44px] whitespace-nowrap text-transparent uppercase [font-family:var(--font-gabarito)] max-[900px]:top-auto max-[900px]:bottom-[112px] max-[900px]:text-[13.25vw] max-[900px]:leading-none max-[640px]:bottom-[127px] max-[640px]:text-[13.7vw]"
+        className={`absolute right-0 left-0 m-0 bg-clip-text text-center text-[244px] leading-[340px] font-extrabold tracking-[2.44px] whitespace-nowrap text-transparent uppercase [font-family:var(--font-gabarito)] max-[900px]:top-auto max-[900px]:bottom-[112px] max-[900px]:text-[13.25vw] max-[900px]:leading-none max-[640px]:bottom-[127px] max-[640px]:text-[13.7vw] ${aboutPage ? "top-[648px]" : "top-[430px]"}`}
         style={{ backgroundImage: "linear-gradient(269.44deg, #666 66.655%, #00a5cc 85.739%, #0e5363 97.534%)" }}
       >
         COLOREYES
