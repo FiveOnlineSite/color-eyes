@@ -9,7 +9,7 @@ import SectionBadge from "@/components/home/SectionBadge";
 
 const reasons = [
   ["Comfort-Focused Design", "Designed for comfortable everyday wear, helping lenses feel easy, balanced and dependable throughout your routine."],
-  ["Natural-Looking Choices", "Explore shades and styles created to complement natural eye colour while supporting confident personal expression."],
+  ["Natural-Looking Choices", "Explore shades and styles created to complement natural eye color while supporting confident personal expression."],
   ["Vision Options That Fit", "Choose from clear, powered and specialised lenses designed to support different vision and lifestyle needs."],
   ["Quality You Can Trust", "Careful manufacturing and quality checks help maintain consistent performance, safety and dependable product standards throughout."],
   ["Support That Stays Close", "Access helpful guidance through our products, retail partners and distributor network whenever support is needed."],

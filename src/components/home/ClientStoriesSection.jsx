@@ -13,7 +13,7 @@ import WaveHeadingText from "./WaveHeadingText";
 const stories = [
   {
     alt: "ColorEyes client story",
-    title: "Coloured lens essentials",
+    title: "colored lens essentials",
     video: "/videos/video-1.mp4",
   },
   {
@@ -28,7 +28,7 @@ const stories = [
   },
    {
     alt: "ColorEyes client story",
-    title: "Coloured lens",
+    title: "colored lens",
     video: "/videos/video-1.mp4",
   },
   {

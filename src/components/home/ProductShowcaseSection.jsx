@@ -13,7 +13,7 @@ const brands = [
     title: "CELEBRATION",
     count: "01/03",
     description:
-      "Colour made to stand out. Comfort made to stay with you.",
+      "color made to stand out. Comfort made to stay with you.",
     background: "/assets/celebration-showcase-bg.webp",
     mark: "celebration",
     headingFont: "[font-family:var(--font-gabarito)]",
@@ -37,7 +37,7 @@ const brands = [
     title: "CLEARTHIN",
     count: "03/03",
     description:
-      "Subtle colour, natural comfort — made to feel effortlessly you.",
+      "Subtle color, natural comfort — made to feel effortlessly you.",
     background: "/assets/brand-clearthin-bg.webp",
     mark: "clearthin",
     headingFont: "[font-family:var(--font-oswald)]",
@@ -120,7 +120,7 @@ function BrandCategories({ className = "" }) {
     <div
       className={`flex items-center justify-center gap-3 text-[clamp(12px,0.972vw,15px)] leading-5 [font-family:var(--font-manrope)] ${className}`}
     >
-      <span>Colour Lenses</span>
+      <span>color Lenses</span>
       <Image src="/assets/brand-category-dot.svg" alt="" width={10} height={10} />
       <span>Everyday Style</span>
       <Image src="/assets/brand-category-dot.svg" alt="" width={10} height={10} />

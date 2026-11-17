@@ -4,6 +4,7 @@ import Footer from "@/components/home/Footer";
 import Header from "@/components/home/Header";
 import SectionBadge from "@/components/home/SectionBadge";
 import QualityAccordion from "@/components/about/QualityAccordion";
+import AboutTimeline from "@/components/about/AboutTimeline";
 import TrustSection from "@/components/about/TrustSection";
 
 export const metadata = {
@@ -107,6 +108,7 @@ export default function AboutUsPage() {
       </section>
 
       <TrustSection />
+      <AboutTimeline />
 
       <section className="h-[905px] bg-[#fcfcfc] pt-[60px] max-[900px]:h-auto max-[900px]:pb-16 max-[640px]:pt-16" aria-labelledby="about-team-title">
         <div className="mx-auto w-[min(1280px,89%)] text-center">

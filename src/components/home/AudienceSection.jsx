@@ -1,4 +1,8 @@
+"use client";
+
 import Image from "next/image";
+import { useLayoutEffect, useRef } from "react";
+import gsap from "gsap";
 import SectionBadge from "./SectionBadge";
 import WaveHeadingText from "./WaveHeadingText";
 
@@ -10,8 +14,50 @@ const audiences = [
 ];
 
 export default function AudienceSection() {
+  const sectionRef = useRef(null);
+
+  useLayoutEffect(() => {
+    const section = sectionRef.current;
+    const cardContent = section?.querySelectorAll("[data-audience-content]");
+    if (!cardContent?.length || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return undefined;
+
+    let observer;
+    let revealTween;
+    const context = gsap.context(() => {
+      gsap.set(cardContent, { autoAlpha: 0, y: 24 });
+      observer = new IntersectionObserver(([entry]) => {
+        if (entry.isIntersecting) {
+          revealTween?.kill();
+          revealTween = gsap.fromTo(cardContent, { autoAlpha: 0, y: 24 }, {
+            autoAlpha: 1,
+            y: 0,
+            duration: 0.8,
+            stagger: 0.16,
+            ease: "power3.out",
+            overwrite: true,
+          });
+          return;
+        }
+
+        gsap.killTweensOf(cardContent);
+        gsap.set(cardContent, { autoAlpha: 0, y: 24 });
+      }, {
+        threshold: 0.2,
+        rootMargin: "0px 0px -10% 0px",
+      });
+      observer.observe(section);
+    }, section);
+
+    return () => {
+      observer?.disconnect();
+      revealTween?.kill();
+      context.revert();
+    };
+  }, []);
+
   return (
     <section
+      ref={sectionRef}
       className="h-[647px] bg-white px-20 py-[60px] max-[1180px]:px-12 max-[900px]:h-auto max-[900px]:px-8 max-[900px]:pt-14 max-[900px]:pb-[72px] max-[640px]:px-5 max-[640px]:pt-[50px] max-[640px]:pb-16"
       id="eye-care"
       aria-labelledby="audience-title"
@@ -28,18 +74,20 @@ export default function AudienceSection() {
       <div className="grid h-[315px] grid-cols-4 border-y border-dashed border-[#777] max-[900px]:h-auto max-[900px]:grid-cols-2 max-[640px]:grid-cols-1">
         {audiences.map(({ title, copy, icon }) => (
           <article
+            data-audience-card
             className="flex flex-col justify-between border-r border-dashed border-[#777] p-6 last:border-r-0 max-[900px]:min-h-[260px] max-[900px]:border-b max-[900px]:even:border-r-0 max-[900px]:nth-[n+3]:border-b-0 max-[640px]:min-h-[220px] max-[640px]:border-r-0 max-[640px]:border-b! max-[640px]:last:border-b-0!"
             key={title}
           >
             <Image
               aria-hidden="true"
+              data-audience-content
               className="size-10"
               src={`/assets/${icon}`}
               alt=""
               height={40}
               width={40}
             />
-            <div>
+            <div data-audience-content>
               <h3 className="mb-3 text-xl leading-[30px] font-semibold text-[#232323] [font-family:var(--font-gabarito)]">{title}</h3>
               <p className="m-0 text-sm leading-6 text-[#444] [font-family:var(--font-manrope)]">{copy}</p>
             </div>

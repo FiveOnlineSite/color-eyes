@@ -13,8 +13,8 @@ import { products } from "@/data/products";
 const questions = [
   { question: "What brings you to color eyes?", type: "largeImage", options: [
     { label: "Vision Correction", description: "I need lenses to correct my vision", image: "/assets/find-my-product/q1-vision.png", crop: "left-0 top-[-29.5%] h-[175%] w-full" },
-    { label: "Cosmetic Use", description: "I want to change or enhance my eye colour.", image: "/assets/find-my-product/q1-cosmetic.png", crop: "left-[.13%] top-[-22.68%] h-[233.33%] w-full" },
-    { label: "Both Vision + Colour", description: "I want vision correction and a new look.", image: "/assets/find-my-product/q1-both.png", crop: "left-0 top-[-27.82%] h-[233.33%] w-full" },
+    { label: "Cosmetic Use", description: "I want to change or enhance my eye color.", image: "/assets/find-my-product/q1-cosmetic.png", crop: "left-[.13%] top-[-22.68%] h-[233.33%] w-full" },
+    { label: "Both Vision + color", description: "I want vision correction and a new look.", image: "/assets/find-my-product/q1-both.png", crop: "left-0 top-[-27.82%] h-[233.33%] w-full" },
     { label: "Professional Use", description: "For work, content creation or special purposes.", image: "/assets/find-my-product/q1-professional.png" },
   ] },
   { question: "What kind of look do you want?", type: "largeImage", options: [
@@ -23,7 +23,7 @@ const questions = [
     { label: "Bold Transformation", description: "A dramatic new look.", image: "/assets/find-my-product/q2-bold.png" },
     { label: "Occasion-Specific Look", description: "For events, photos or special moments.", image: "/assets/find-my-product/q2-occasion.png", crop: "left-[-.06%] top-[-15.68%] h-[155.56%] w-full" },
   ] },
-  { question: "What is your natural eye colour?", type: "smallImage", options: [
+  { question: "What is your natural eye color?", type: "smallImage", options: [
     { label: "Dark Brown", image: "/assets/find-my-product/q3-dark-brown.png" },
     { label: "Medium Brown", image: "/assets/find-my-product/q3-medium-brown.png" },
     { label: "Light Brown", image: "/assets/find-my-product/q3-light-brown.png" },
@@ -181,7 +181,7 @@ export default function FindMyProductPage() {
           <p className="mt-3 text-sm leading-5 text-[#666] [font-family:var(--font-manrope)]">Review your preferences before we find the ColorEyes lenses that matches you best</p>
           <div className="mt-6 grid grid-cols-2 gap-3 max-[520px]:mt-5 max-[520px]:grid-cols-1 max-[520px]:gap-2">{questions.map((item, index) => <div className="flex h-16 items-center rounded-xl bg-[#fcfcfc] p-2 shadow-[0_1px_16px_rgba(0,0,0,.1)] max-[520px]:h-14 max-[520px]:py-1" key={item.question}>
             <Image className="size-12 shrink-0" src={selectionIcons[index]} alt="" width={48} height={48} />
-            <span className="ml-2.5 min-w-0 flex-1"><span className="block text-xs leading-[18px] text-[#232323] [font-family:var(--font-manrope)]">{selectionLabels[index]}</span><strong className="block truncate font-[family-name:var(--font-gabarito)] text-[15px] leading-5 font-semibold text-black">{answers[index]?.replace("Colour", "Color").replace("Single-Vision", "Single Vision")}</strong></span>
+            <span className="ml-2.5 min-w-0 flex-1"><span className="block text-xs leading-[18px] text-[#232323] [font-family:var(--font-manrope)]">{selectionLabels[index]}</span><strong className="block truncate font-[family-name:var(--font-gabarito)] text-[15px] leading-5 font-semibold text-black">{answers[index]?.replace("color", "Color").replace("Single-Vision", "Single Vision")}</strong></span>
             <button className="ml-2 grid size-9 shrink-0 place-items-center transition hover:opacity-70" type="button" onClick={() => editAnswer(index)} aria-label={`Edit ${selectionLabels[index]}`}><Image src="/assets/find-my-product/popup-edit.svg" alt="" width={20} height={20} /></button>
           </div>)}</div>
           <button className="mt-6 h-10 w-full rounded-[4px] bg-[#1893ae] font-[family-name:var(--font-manrope)] text-sm font-semibold text-white transition hover:bg-[#137286] disabled:cursor-not-allowed disabled:opacity-50 max-[520px]:mt-5" type="button" onClick={confirmAnswers} disabled={completed !== questions.length}>Find My Matches</button>

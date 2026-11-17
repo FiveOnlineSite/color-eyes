@@ -60,8 +60,8 @@ export default function Footer({ productPage = false, aboutPage = false, homePat
           <h2 className={headingClasses}>Quick Link</h2>
           <Link href={`${homePath}#home`}>Home</Link>
           <Link href="/about-us">About</Link>
-          <Link href={`${homePath}#eye-care`}>FAQs</Link>
-          <Link href={`${homePath}#contact`}>Contact Us</Link>
+          <Link href="/faqs">FAQs</Link>
+          <Link href="/contact-us">Contact Us</Link>
         </section>
         <section className={`${columnClasses} [&>a]:mb-2`}>
           <h2 className={headingClasses}>Brands</h2>

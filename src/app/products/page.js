@@ -2,7 +2,8 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { useEffect, useRef, useState } from "react";
 import Header from "@/components/home/Header";
 import Footer from "@/components/home/Footer";
 import { products as productCatalogue } from "@/data/products";
@@ -14,7 +15,7 @@ const fallbackProduct = {
   price: "₹2,999.00",
 };
 
-const filters = ["Price", "Color", "Occasions", "Lens Type"];
+const filters = ["Price", "Color", "Modality", "Lens Type"];
 
 const priceFilters = [
   { id: "under-1000", label: "Under ₹1,000", min: 0, max: 999.99 },
@@ -30,6 +31,18 @@ const sortOptions = [
   { id: "price-high-low", label: "Price: High to Low" },
 ];
 
+const celebrationHoverImages = {
+  "Celebration Clear 38 Torics – Yearly": "/assets/celebration-hover/celebration-colors-toric–yearly.webp",
+  "Celebration Clear – Monthly": "/assets/celebration-hover/celebration-clear–monthly.png",
+  "Celebration Clear Toric – Monthly": "/assets/celebration-hover/celebration-clear-toric–monthly.png",
+  "Celebration Daily Disposable Soft Contact Lens": "/assets/celebration-hover/daily-disposable.webp",
+  "Celebration Weekly Color – Weekly": "/assets/celebration-hover/celebration-weekly-color-weekly.webp",
+  "Celebration Disposable Color Toric – Monthly": "/assets/celebration-hover/celebration-disposable-color-toric–monthly.webp",
+  "Celebration Colors Toric – Yearly": "/assets/celebration-hover/celebration-colors-toric–yearly.webp",
+  "Celebration Colors – Yearly": "/assets/celebration-hover/celebration-colors–yearly.webp",
+  "Celebration Disposable Color – Monthly": "/assets/celebration-hover/celebration-disposable-color–monthly.webp",
+};
+
 function getPriceBounds(price) {
   const values = (price.match(/[\d,]+(?:\.\d+)?/g) ?? []).map((value) => Number(value.replaceAll(",", "")));
   return { min: values[0] ?? 0, max: values.at(-1) ?? 0 };
@@ -37,8 +50,8 @@ function getPriceBounds(price) {
 
 const categoryDefinitions = [
   { id: "clearthin", label: "ClearThin", logo: ["brand-clearthin.png", 92, 31], price: "₹999.00", heroTitle: "Clear vision. Featherlight feel.", heroCopy: "Explore ClearThin lenses designed for crisp everyday vision, breathable comfort and an effortlessly light fit.", bannerLines: ["Clearer Vision", "Starts Here"], bannerCopy: "ClearThin lenses made for clean, comfortable everyday wear.", names: ["ClearThin Air", "ClearThin Lite", "ClearThin Pure", "ClearThin Edge", "ClearThin Ultra", "ClearThin Sleek", "ClearThin Crystal", "ClearThin Prime", "ClearThin Nova", "ClearThin Aura", "ClearThin Optima", "ClearThin Elite"] },
-  { id: "polylite", label: "Polylite", logo: ["brand-polylite.png", 91, 37], price: "₹1,499.00", heroTitle: "Lightweight lenses. Everyday freedom.", heroCopy: "Discover Polylite lenses made for flexible comfort, clear vision and confidence through every part of your day.", bannerLines: ["Comfort That", "Moves With You"], bannerCopy: "Polylite lenses designed for active days and easy, dependable wear.", names: ["Polylite Air", "Polylite Flex", "Polylite Crystal", "Polylite Swift", "Polylite Clear", "Polylite Active", "Polylite Feather", "Polylite Vision", "Polylite Prime", "Polylite Comfort", "Polylite Shield", "Polylite Ultra"] },
-  { id: "celebration", label: "Celebration", logo: ["brand-celebration.png", 92, 37], price: "₹399.00", heroTitle: "Find Your Shade. Own Your Look.", heroCopy: "Explore coloured lenses designed to enhance your eyes with natural-looking shades, comfortable wear and effortless expression.", bannerLines: ["Find Your", "Perfect Shade"], bannerCopy: "Celebration coloured lenses designed for comfort, confidence and everyday style.", names: ["Celebration Clear 38 Torics – Yearly", "Celebration Clear – Monthly", "Celebration Clear Toric – Monthly", "Celebration Daily Disposable Soft Contact Lens", "Celebration Weekly Color – Weekly", "Celebration Disposable Color Toric – Monthly", "Celebration Colors Toric – Yearly", "Celebration Colors – Yearly", "Celebration Disposable Color – Monthly"] },
+  { id: "polylite", label: "Polylite", logo: ["brand-polylite.png", 91, 37], price: "₹1,499.00", heroTitle: "Lightweight lenses. Everyday freedom.", heroCopy: "Discover Polylite lenses made for flexible comfort, clear vision and confidence through every part of your day.", bannerLines: ["Comfort That", "Moves With You"], bannerCopy: "Polylite lenses designed for active days and easy, dependable wear.", names: ["Polylite Monthly Clear – Monthly", "Polylite One Day Color Toric – Daily", "Polylite One Day Color – Daily", "Polylite X-Chrome – Yearly", "Polylite 38 Iris – Yearly", "Polylite 38 Color – Yearly", "Polylite Disposable Color – Monthly", "Polylite 38 Clear – Yearly"] },
+  { id: "celebration", label: "Celebration", logo: ["brand-celebration.png", 92, 37], price: "₹399.00", heroTitle: "Find Your Shade. Own Your Look.", heroCopy: "Explore colored lenses designed to enhance your eyes with natural-looking shades, comfortable wear and effortless expression.", bannerLines: ["Find Your", "Perfect Shade"], bannerCopy: "Celebration colored lenses designed for comfort, confidence and everyday style.", names: ["Celebration Clear 38 Torics – Yearly", "Celebration Clear – Monthly", "Celebration Clear Toric – Monthly", "Celebration Daily Disposable Soft Contact Lens", "Celebration Weekly Color – Weekly", "Celebration Disposable Color Toric – Monthly", "Celebration Colors Toric – Yearly", "Celebration Colors – Yearly", "Celebration Disposable Color – Monthly"] },
 ];
 
 const productCategories = categoryDefinitions.map((category) => ({
@@ -52,6 +65,7 @@ const productCategories = categoryDefinitions.map((category) => ({
       note: catalogueProduct?.note ?? "For 6 month use only.",
       price: catalogueProduct?.price ?? category.price,
       featuredImage: catalogueProduct?.featuredImage ?? null,
+      hoverImage: celebrationHoverImages[name] ?? null,
       hasColorVariants: catalogueProduct?.hasColorVariants ?? true,
       lensType: catalogueProduct?.lensType ?? (/toric/i.test(name) ? "Toric" : "Spherical"),
       variantColors: catalogueProduct?.variantColors ?? null,
@@ -59,11 +73,13 @@ const productCategories = categoryDefinitions.map((category) => ({
   }),
 }));
 
+const allProducts = productCategories.flatMap((category) => category.products);
+
 function FilterButton({ active = false, children, sort = false, ...buttonProps }) {
   return (
-    <button className={`flex h-[38px] w-full items-center justify-between rounded-lg border py-2 pr-3 pl-4 text-sm leading-5 font-medium transition max-[760px]:h-11 ${active ? "border-[#097890] bg-[#e3f1fc] text-[#097890]" : "border-[#666] text-[#232323]"}`} type="button" {...buttonProps}>
-      <span>{children}</span>
-      <Image src={sort ? "/assets/plp/sort.svg" : "/assets/plp/dropdown.svg"} alt="" width={20} height={20} />
+    <button className={`flex h-[38px] w-full items-center gap-2 overflow-hidden rounded-lg border py-2 pr-3 pl-4 text-sm leading-5 font-medium transition max-[760px]:h-11 ${active ? "border-[#097890] bg-[#e3f1fc] text-[#097890]" : "border-[#666] text-[#232323]"}`} type="button" {...buttonProps}>
+      <span className="min-w-0 flex-1 truncate text-left">{children}</span>
+      <Image className="size-5 shrink-0" src={sort ? "/assets/plp/sort.svg" : "/assets/plp/dropdown.svg"} alt="" width={20} height={20} />
     </button>
   );
 }
@@ -73,10 +89,29 @@ function ProductCard({ product = fallbackProduct }) {
   const [displayedImage, setDisplayedImage] = useState(defaultImage);
   const [displayedSprite, setDisplayedSprite] = useState(null);
   const [selectedVariant, setSelectedVariant] = useState("");
+  const previewVariant = (name, image, sprite) => {
+    setDisplayedImage(image);
+    setDisplayedSprite(sprite ?? null);
+    setSelectedVariant(name);
+  };
 
   return (
     <article className="relative h-[549px] max-[560px]:flex max-[560px]:h-auto max-[560px]:flex-col">
-      <div className="absolute top-0 left-0 h-[307px] w-full overflow-hidden rounded-lg border border-[#666]/20 max-[560px]:relative max-[560px]:top-auto max-[560px]:left-auto max-[560px]:h-[220px] max-[560px]:shrink-0">
+      <div
+        className="absolute top-0 left-0 h-[307px] w-full overflow-hidden rounded-lg border border-[#666]/20 max-[560px]:relative max-[560px]:top-auto max-[560px]:left-auto max-[560px]:h-[220px] max-[560px]:shrink-0"
+        onMouseEnter={() => {
+          if (!selectedVariant && product.hoverImage) {
+            setDisplayedImage(product.hoverImage);
+            setDisplayedSprite(null);
+          }
+        }}
+        onMouseLeave={() => {
+          if (!selectedVariant) {
+            setDisplayedImage(defaultImage);
+            setDisplayedSprite(null);
+          }
+        }}
+      >
         {displayedSprite ? (
           <div className="absolute inset-0 grid place-items-center bg-white p-3">
             <div className="relative aspect-[323.25/249] w-full overflow-hidden">
@@ -108,25 +143,35 @@ function ProductCard({ product = fallbackProduct }) {
             <>
               <p className="mt-[10px] font-[family-name:var(--font-manrope)] text-xs leading-5 text-[#666]">Available Variants</p>
               {product.variantColors ? (
-                <div className="mt-2 flex h-[22px] items-center gap-2 max-[560px]:w-full max-[560px]:overflow-x-auto" aria-label={`${product.name} colour variants`}>
-                  {product.variantColors.map(([name, color, image, sprite]) => (
-                    <button
-                      aria-label={`Show ${name}`}
-                      aria-pressed={selectedVariant === name}
-                      className={`size-[22px] shrink-0 rounded-full border-2 transition ${selectedVariant === name ? "border-[#097890]" : "border-transparent"}`}
-                      key={name}
-                      onClick={() => {
-                        setSelectedVariant(name);
-                        if (image) {
-                          setDisplayedImage(image);
-                          setDisplayedSprite(sprite ?? null);
+                <div className="mt-2" aria-label={`${product.name} color variants`}>
+                  <div className="flex h-[22px] items-center gap-2 overflow-x-auto">
+                    {product.variantColors.map(([name, color, image, sprite]) => (
+                      <button
+                        aria-label={`Show ${name}`}
+                        aria-pressed={selectedVariant === name}
+                        className={`grid size-[22px] shrink-0 place-items-center rounded-full border-2 transition ${selectedVariant === name ? "border-[#097890]" : "border-transparent"}`}
+                        key={name}
+                        onClick={() => {
+                        if (selectedVariant === name) {
+                          setSelectedVariant("");
+                          setDisplayedImage(defaultImage);
+                          setDisplayedSprite(null);
+                        } else if (image) {
+                          previewVariant(name, image, sprite);
                         }
-                      }}
-                      style={{ backgroundColor: color }}
-                      title={name}
-                      type="button"
-                    />
-                  ))}
+                        }}
+                        style={{ backgroundColor: color }}
+                        title={name}
+                        type="button"
+                      >
+                        {selectedVariant === name && (
+                          <svg aria-hidden="true" className="size-3 text-white drop-shadow-[0_1px_1px_rgba(0,0,0,.45)]" fill="none" viewBox="0 0 12 12">
+                            <path d="m2.25 6.25 2.2 2.2 5.3-5.1" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.8" />
+                          </svg>
+                        )}
+                      </button>
+                    ))}
+                  </div>
                 </div>
               ) : (
                 <Image className="mt-2 h-[22px] w-[104px]" src="/assets/plp/variants.svg" alt="Four lens variants" width={104} height={22} />
@@ -165,24 +210,25 @@ const helpCards = [
   ["/assets/plp/location.svg", "Find A Distributor", "Find Nearby"],
 ];
 
-function HelpCard({ icon, title, action, primary }) {
+function HelpCard({ icon, title, action }) {
   return (
-    <article className="flex min-h-[334px] flex-col rounded-2xl border-[.6px] border-[#097890] bg-[#fcfcfc] p-6">
+    <article className="group flex min-h-[334px] flex-col rounded-2xl border-[.6px] border-[#097890] bg-[#fcfcfc] p-6">
       <div className="grid size-14 place-items-center rounded-full bg-white shadow-[0_4px_16px_rgba(9,120,144,.12)]">
         <Image src={icon} alt="" width={32} height={32} />
       </div>
       <h3 className="mt-5 text-xl font-semibold leading-[30px] text-[#097890]">{title}</h3>
       <p className="mt-4 font-[family-name:var(--font-manrope)] text-sm leading-5 text-[#444]">Take a moment to answer a few questions, and we will provide you recommendations for the perfect lens tailored just for you.</p>
-      <a className={`mt-auto inline-flex h-12 w-fit items-center gap-3 rounded-full py-1 pr-1 pl-5 font-[family-name:var(--font-manrope)] text-base font-semibold ${primary ? "bg-[#1893ae] text-white" : "border border-[#097890] text-[#097890]"}`} href="#">
+      <a className="mt-auto inline-flex h-12 w-fit items-center gap-3 rounded-full border border-[#097890] py-1 pr-1 pl-5 font-[family-name:var(--font-manrope)] text-base font-semibold text-[#097890] transition-colors duration-200 group-hover:border-[#1893ae] group-hover:bg-[#1893ae] group-hover:text-white" href="#">
         {action}
-        <span className={`grid size-10 place-items-center rounded-full ${primary ? "bg-white" : "size-9 border border-[#097890]"}`}><Image src="/assets/plp/arrow.svg" alt="" width={18} height={18} /></span>
+        <span className="grid size-10 place-items-center rounded-full border border-[#097890] bg-white transition-colors duration-200 group-hover:border-white"><Image src="/assets/plp/arrow.svg" alt="" width={18} height={18} /></span>
       </a>
     </article>
   );
 }
 
-export default function ProductListingPage() {
-  const [activeCategoryId, setActiveCategoryId] = useState("clearthin");
+export default function ProductListingPage({ initialCategoryId = "all" }) {
+  const router = useRouter();
+  const [activeCategoryId, setActiveCategoryId] = useState(initialCategoryId);
   const [isPriceFilterOpen, setIsPriceFilterOpen] = useState(false);
   const [isColorFilterOpen, setIsColorFilterOpen] = useState(false);
   const [isLensTypeFilterOpen, setIsLensTypeFilterOpen] = useState(false);
@@ -191,15 +237,17 @@ export default function ProductListingPage() {
   const [selectedColor, setSelectedColor] = useState("");
   const [selectedLensType, setSelectedLensType] = useState("");
   const [selectedSort, setSelectedSort] = useState("");
+  const filterControlsRef = useRef(null);
   const activeCategory = productCategories.find((category) => category.id === activeCategoryId) ?? productCategories[0];
+  const productsInView = activeCategoryId === "all" ? allProducts : activeCategory.products;
   const selectedPriceFilter = priceFilters.find((priceFilter) => priceFilter.id === selectedPrice);
   const selectedSortOption = sortOptions.find((sortOption) => sortOption.id === selectedSort);
   const availableColors = Array.from(
     new Map(
-      activeCategory.products.flatMap((product) => product.variantColors ?? []).map(([name, color]) => [name, [name, color]]),
+      productsInView.flatMap((product) => product.variantColors ?? []).map(([name, color]) => [name, [name, color]]),
     ).values(),
   );
-  const filteredProducts = activeCategory.products.filter((product) => {
+  const filteredProducts = productsInView.filter((product) => {
     const priceMatches = !selectedPriceFilter || (() => {
       const bounds = getPriceBounds(product.price);
       return bounds.max >= selectedPriceFilter.min && bounds.min <= selectedPriceFilter.max;
@@ -216,6 +264,20 @@ export default function ProductListingPage() {
   });
   const hasActiveFilters = Boolean(selectedPrice || selectedColor || selectedLensType || selectedSort);
 
+  useEffect(() => {
+    function closeOpenDropdowns(event) {
+      if (filterControlsRef.current?.contains(event.target)) return;
+
+      setIsPriceFilterOpen(false);
+      setIsColorFilterOpen(false);
+      setIsLensTypeFilterOpen(false);
+      setIsSortOpen(false);
+    }
+
+    document.addEventListener("pointerdown", closeOpenDropdowns);
+    return () => document.removeEventListener("pointerdown", closeOpenDropdowns);
+  }, []);
+
   function clearFilters() {
     setSelectedPrice("");
     setSelectedColor("");
@@ -231,14 +293,27 @@ export default function ProductListingPage() {
     <main className="overflow-hidden bg-white text-[#111]">
       <Header />
       <section className="relative mt-[120px] h-[444px] overflow-hidden bg-[#a9cceb] [background:radial-gradient(circle_at_20%_20%,rgba(255,255,255,.38),transparent_34%),linear-gradient(110deg,#bedbf3_0%,#9fc5e7_100%)] max-[760px]:h-[650px]">
-        <div className="absolute top-[60px] left-[80px] z-10 flex items-center gap-2.5 rounded-full bg-[#e3f1fc] px-4 py-2 max-[760px]:left-6"><Image className="size-5 animate-[spin_4s_linear_infinite] object-cover will-change-transform motion-reduce:animate-none" src="/assets/plp/badge-star.png" alt="" width={20} height={20} /><span className="font-[family-name:var(--font-manrope)] text-sm font-semibold">Your Perfect Lens Awaits</span></div>
+        <div className="absolute top-[60px] left-[80px] z-10 inline-flex h-10 w-fit items-center gap-2.5 rounded-full bg-[#e3f1fc] px-4 max-[760px]:left-6"><Image className="size-5 shrink-0 animate-[spin_4s_linear_infinite] object-cover will-change-transform motion-reduce:animate-none" src="/assets/plp/badge-star.png" alt="" width={20} height={20} /><span className="font-[family-name:var(--font-manrope)] text-sm font-semibold">Your Perfect Lens Awaits</span></div>
         <div className="absolute top-[139px] left-[80px] z-10 max-w-[522px] text-white max-[760px]:top-32 max-[760px]:left-6"><h1 className="max-w-[430px] text-[40px] leading-[52px] font-bold">{activeCategory.heroTitle}</h1><p className="mt-5 font-[family-name:var(--font-manrope)] text-base leading-6">{activeCategory.heroCopy}</p><div className="mt-8 flex items-center"><div className="flex w-[89px]">{[1,2,3,4].map((n,index)=><Image className={`size-8 rounded-full ${index ? "-ml-[13px]" : ""}`} src={`/assets/plp/avatar-${n}.png`} alt="" width={32} height={32} key={n}/>)}</div><span className="ml-3 font-[family-name:var(--font-manrope)] text-sm">Trusted by 4k+ Professionals</span></div></div>
-        <Image className="absolute top-0 left-[54.7%] z-[2] h-[691px] w-[461px] object-cover max-[1000px]:left-[58%] max-[760px]:top-[285px] max-[760px]:left-[-20px] max-[760px]:h-[430px] max-[760px]:w-[287px]" src="/assets/plp/bottle-small.png" alt="Model wearing coloured lenses" width={461} height={691} priority />
-        <Image className="absolute top-[14px] right-[23px] h-[505px] w-[337px] object-cover max-[1000px]:right-[-60px] max-[760px]:top-[325px] max-[760px]:right-[-10px] max-[760px]:h-[360px] max-[760px]:w-[240px]" src="/assets/plp/bottle-large.png" alt="Model wearing coloured lenses" width={337} height={505} priority />
+        <Image className="absolute top-0 left-[54.7%] z-[2] h-[691px] w-[461px] object-cover max-[1000px]:left-[58%] max-[760px]:top-[285px] max-[760px]:left-[-20px] max-[760px]:h-[430px] max-[760px]:w-[287px]" src="/assets/plp/bottle-small.png" alt="Model wearing colored lenses" width={461} height={691} priority />
+        <Image className="absolute top-[14px] right-[23px] h-[505px] w-[337px] object-cover max-[1000px]:right-[-60px] max-[760px]:top-[325px] max-[760px]:right-[-10px] max-[760px]:h-[360px] max-[760px]:w-[240px]" src="/assets/plp/bottle-large.png" alt="Model wearing colored lenses" width={337} height={505} priority />
       </section>
 
-      <section className="relative mx-auto mt-9 h-[38px] w-[min(1280px,89%)] max-[1180px]:flex max-[1180px]:h-auto max-[1180px]:flex-wrap max-[1180px]:items-center max-[1180px]:justify-between max-[1180px]:gap-4 max-[760px]:grid max-[760px]:grid-cols-2 max-[760px]:gap-3">
-        <div className="absolute top-0 left-0 flex h-[38px] w-[299px] items-center gap-3 max-[1180px]:static max-[760px]:col-span-2 max-[760px]:h-11 max-[760px]:w-full max-[760px]:justify-start max-[760px]:overflow-x-auto max-[760px]:pb-1">
+      <section ref={filterControlsRef} className="relative mx-auto mt-9 h-[38px] w-[min(1280px,89%)] max-[1180px]:flex max-[1180px]:h-auto max-[1180px]:flex-wrap max-[1180px]:items-center max-[1180px]:justify-between max-[1180px]:gap-4 max-[760px]:grid max-[760px]:grid-cols-2 max-[760px]:gap-3">
+        <div className="absolute top-0 left-0 flex h-[38px] w-[360px] items-center gap-3 max-[1180px]:static max-[760px]:col-span-2 max-[760px]:h-11 max-[760px]:w-full max-[760px]:justify-start max-[760px]:overflow-x-auto max-[760px]:pb-1">
+          <button
+            aria-label="Show all products"
+            aria-pressed={activeCategoryId === "all"}
+            className={`h-[38px] shrink-0 rounded px-3 text-sm font-semibold transition ${activeCategoryId === "all" ? "bg-[#e3f1fc] text-[#097890] ring-1 ring-inset ring-[#097890]" : "hover:bg-[#f0f7ff]"}`}
+            onClick={() => {
+              setActiveCategoryId("all");
+              clearFilters();
+              router.push("/products", { scroll: false });
+            }}
+            type="button"
+          >
+            All
+          </button>
           {productCategories.map((category) => {
             const [src, width, height] = category.logo;
             const isActive = activeCategoryId === category.id;
@@ -251,14 +326,8 @@ export default function ProductListingPage() {
                 key={category.id}
                 onClick={() => {
                   setActiveCategoryId(category.id);
-                  setSelectedPrice("");
-                  setSelectedColor("");
-                  setSelectedLensType("");
-                  setSelectedSort("");
-                  setIsPriceFilterOpen(false);
-                  setIsColorFilterOpen(false);
-                  setIsLensTypeFilterOpen(false);
-                  setIsSortOpen(false);
+                  clearFilters();
+                  router.push(`/products/${category.id}`, { scroll: false });
                 }}
                 type="button"
               >
@@ -267,7 +336,7 @@ export default function ProductListingPage() {
             );
           })}
         </div>
-        <div className="absolute top-0 left-[330px] flex h-[38px] gap-[15px] max-[1180px]:static max-[760px]:contents">
+        <div className="absolute top-0 left-[390px] flex h-[38px] gap-[15px] max-[1180px]:static max-[760px]:contents">
           {filters.map((filter, index) => {
             const isPrice = filter === "Price";
             const isColor = filter === "Color";
@@ -283,7 +352,7 @@ export default function ProductListingPage() {
                 : filter;
 
             return (
-              <div className={`relative max-[760px]:w-full ${index === 0 ? "w-[130px]" : index === 1 ? "w-[130px]" : index === 2 ? "w-[115px]" : "w-[115px]"}`} key={filter}>
+              <div className={`relative max-[760px]:w-full ${index === 0 ? "w-[130px]" : index === 1 ? "w-[130px]" : index === 2 ? "w-[135px]" : "w-[140px]"}`} key={filter}>
                 <FilterButton
                   active={isActive}
                   aria-controls={isPrice ? "price-filter-options" : isColor ? "color-filter-options" : isLensType ? "lens-type-filter-options" : undefined}
@@ -333,7 +402,7 @@ export default function ProductListingPage() {
                   </div>
                 )}
                 {isColor && isColorFilterOpen && (
-                  <div className="absolute top-[46px] left-0 z-50 max-h-[330px] w-[240px] overflow-y-auto rounded-lg border border-[#666]/30 bg-white p-2 shadow-[0_6px_18px_rgba(0,0,0,.14)] max-[760px]:right-0 max-[760px]:left-auto max-[400px]:w-[min(240px,calc(100vw-24px))]" id="color-filter-options" role="listbox" aria-label={`${activeCategory.label} colours`}>
+                  <div className="absolute top-[46px] left-0 z-50 max-h-[330px] w-[240px] overflow-y-auto rounded-lg border border-[#666]/30 bg-white p-2 shadow-[0_6px_18px_rgba(0,0,0,.14)] max-[760px]:right-0 max-[760px]:left-auto max-[400px]:w-[min(240px,calc(100vw-24px))]" id="color-filter-options" role="listbox" aria-label={`${activeCategory.label} colors`}>
                     {availableColors.length ? availableColors.map(([name, color]) => (
                       <button
                         aria-selected={selectedColor === name}
@@ -349,7 +418,7 @@ export default function ProductListingPage() {
                         <span className="size-4 shrink-0 rounded-[3px] border border-black/15" style={{ backgroundColor: color }} aria-hidden="true" />
                         <span>{name}</span>
                       </button>
-                    )) : <p className="px-2 py-3 font-[family-name:var(--font-manrope)] text-sm text-[#666]">No colour variants are available in this category.</p>}
+                    )) : <p className="px-2 py-3 font-[family-name:var(--font-manrope)] text-sm text-[#666]">No color variants are available in this category.</p>}
                   </div>
                 )}
                 {isLensType && isLensTypeFilterOpen && (
@@ -413,7 +482,7 @@ export default function ProductListingPage() {
       </section>
 
       <div className="mx-auto mt-4 flex min-h-8 w-[min(1280px,89%)] flex-wrap items-center justify-between gap-3 font-[family-name:var(--font-manrope)] text-sm">
-        <p className="text-[#666]">Showing {displayedProducts.length} of {activeCategory.products.length} products</p>
+        <p className="text-[#666]">Showing {displayedProducts.length} of {productsInView.length} products</p>
         {hasActiveFilters && (
           <div className="flex flex-wrap items-center justify-end gap-2">
             {selectedPriceFilter && <button aria-label={`Remove price filter ${selectedPriceFilter.label}`} className="inline-flex items-center gap-2 rounded-full bg-[#e3f1fc] py-1.5 pr-1.5 pl-3 text-[#097890] transition hover:bg-[#d5eafa]" onClick={() => setSelectedPrice("")} type="button"><span>Price: {selectedPriceFilter.label}</span><span className="grid size-6 place-items-center rounded-full bg-[#097890] text-base leading-none font-bold text-white" aria-hidden="true">×</span></button>}
@@ -430,7 +499,7 @@ export default function ProductListingPage() {
           ? <ProductGrid products={displayedProducts.slice(0, 4)} />
           : (
             <div className="mx-auto grid min-h-[220px] w-[min(1280px,89%)] place-items-center rounded-xl border border-[#d8e3ec] bg-[#f7fbfe] px-6 text-center">
-              <div><h2 className="text-2xl font-semibold text-[#232323]">No products match these filters</h2><p className="mt-2 font-[family-name:var(--font-manrope)] text-sm text-[#666]">Try another price, colour, or lens type, or clear the active filters.</p><button className="mt-5 rounded-lg bg-[#097890] px-5 py-2.5 font-[family-name:var(--font-manrope)] text-sm font-semibold text-white" onClick={clearFilters} type="button">Clear Filters</button></div>
+              <div><h2 className="text-2xl font-semibold text-[#232323]">No products match these filters</h2><p className="mt-2 font-[family-name:var(--font-manrope)] text-sm text-[#666]">Try another price, color, or lens type, or clear the active filters.</p><button className="mt-5 rounded-lg bg-[#097890] px-5 py-2.5 font-[family-name:var(--font-manrope)] text-sm font-semibold text-white" onClick={clearFilters} type="button">Clear Filters</button></div>
             </div>
           )}
       </section>
@@ -480,7 +549,7 @@ export default function ProductListingPage() {
       {displayedProducts.length > 8 && <section className="mt-7"><ProductGrid products={displayedProducts.slice(8, 12)} /></section>}
 
       <section className="mt-[60px] h-[454px] px-[5.5vw] py-[60px] [background:linear-gradient(180deg,#f1fafd_0%,#fff_100%)] max-[1180px]:h-auto">
-        <div className="mx-auto grid max-w-[1280px] grid-cols-[317px_repeat(3,301px)] gap-5 max-[1320px]:grid-cols-[280px_repeat(3,minmax(0,1fr))] max-[1180px]:grid-cols-2 max-[600px]:grid-cols-1"><div><div className="inline-flex items-center gap-2.5 rounded-full bg-[#e3f1fc] px-4 py-2"><Image className="size-5 animate-[spin_4s_linear_infinite] object-cover will-change-transform motion-reduce:animate-none" src="/assets/plp/badge-star.png" alt="" width={20} height={20}/><span className="font-[family-name:var(--font-manrope)] text-sm font-semibold">Need Help Choosing?</span></div><h2 className="mt-5 max-w-[310px] text-4xl leading-12 font-bold">Find The Right Way Forward</h2><p className="mt-5 max-w-[304px] font-[family-name:var(--font-manrope)] text-base leading-7 text-[#444]">Choose the path that helps you find the right lens, check your power or connect with a nearby distributor.</p></div>{helpCards.map(([icon,title,action],index)=><HelpCard icon={icon} title={title} action={action} primary={index===0} key={title}/>)}</div>
+        <div className="mx-auto grid max-w-[1280px] grid-cols-[317px_repeat(3,301px)] gap-5 max-[1320px]:grid-cols-[280px_repeat(3,minmax(0,1fr))] max-[1180px]:grid-cols-2 max-[600px]:grid-cols-1"><div><div className="inline-flex h-10 w-fit items-center gap-2.5 rounded-full bg-[#e3f1fc] px-4"><Image className="size-5 shrink-0 animate-[spin_4s_linear_infinite] object-cover will-change-transform motion-reduce:animate-none" src="/assets/plp/badge-star.png" alt="" width={20} height={20}/><span className="font-[family-name:var(--font-manrope)] text-sm font-semibold">Need Help Choosing?</span></div><h2 className="mt-5 max-w-[310px] text-4xl leading-12 font-bold">Find The Right Way Forward</h2><p className="mt-5 max-w-[304px] font-[family-name:var(--font-manrope)] text-base leading-7 text-[#444]">Choose the path that helps you find the right lens, check your power or connect with a nearby distributor.</p></div>{helpCards.map(([icon,title,action])=><HelpCard icon={icon} title={title} action={action} key={title}/>)}</div>
       </section>
       <div className="h-6 bg-white" />
       <Footer />
