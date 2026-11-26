@@ -92,7 +92,7 @@ export default function AboutTimeline() {
             {milestones.map(({ year, title, copy, image, alt }) => (
               <article className="grid h-[320px] w-[min(76vw,850px)] grid-cols-[minmax(0,1fr)_260px] overflow-hidden rounded-2xl border border-[#79adba] bg-white p-7 shadow-[0_8px_28px_rgba(8,96,116,.1)] max-[900px]:h-[320px] max-[900px]:w-[min(86vw,620px)] max-[640px]:h-auto max-[640px]:min-h-[440px] max-[640px]:w-[84vw] max-[640px]:grid-cols-1 max-[640px]:p-5" key={year}>
                 <div className="flex min-w-0 flex-col pr-7 max-[640px]:pr-0">
-                  <p className="text-sm font-bold tracking-[0.14em] text-[#08778f] uppercase">{year}</p>
+                  <p className="text-3xl leading-none font-bold tracking-[0.08em] text-[#08778f] uppercase max-[640px]:text-2xl">{year}</p>
                   <h3 className="mt-4 text-[30px] leading-9 font-semibold text-[#1d1d1d] [font-family:var(--font-gabarito)] max-[640px]:text-2xl max-[640px]:leading-8">{title}</h3>
                   <p className="mt-5 text-base leading-7 text-[#4c5b60]">{copy}</p>
                 </div>

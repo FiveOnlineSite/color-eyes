@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { useLayoutEffect, useRef } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -175,6 +176,7 @@ function BrandArtwork({ brand, side }) {
           : `inset-y-0 w-[200%] ${side === "left" ? "left-0" : "right-0"}`
       }`}
     >
+      <Link aria-label={`View ${brand.title} products`} className="absolute inset-0 z-10" href={`/products?brand=${brand.id}`} />
       <Image
         aria-hidden="true"
         alt=""
@@ -270,6 +272,8 @@ export default function ProductShowcaseSection() {
   const rightTrackRef = useRef(null);
   const finalArtworkRef = useRef(null);
   const productCursorRef = useRef(null);
+  const bannerLinkRef = useRef(null);
+  const activeBrandIdRef = useRef(brands[0].id);
 
   useLayoutEffect(() => {
     gsap.registerPlugin(ScrollTrigger);
@@ -351,6 +355,20 @@ export default function ProductShowcaseSection() {
           const setRightTrackY = gsap.quickSetter(rightTrack, "y", "px");
           const syncSplitTracks = () => {
             const timelinePosition = showcaseProgress * SHOWCASE_SCROLLS;
+            const nextBrandId = timelinePosition >= CLEARTHIN_CENTERED_AT
+              ? "clearthin"
+              : timelinePosition >= POLYLITE_CENTERED_AT
+                ? "polylite"
+                : "celebration";
+
+            if (activeBrandIdRef.current !== nextBrandId) {
+              activeBrandIdRef.current = nextBrandId;
+              const href = `/products?brand=${nextBrandId}`;
+              productCursor.href = href;
+              productCursor.setAttribute("aria-label", `View ${nextBrandId} products`);
+              bannerLinkRef.current.href = href;
+              bannerLinkRef.current.setAttribute("aria-label", `View ${nextBrandId} products`);
+            }
             const isPolyliteResting =
               timelinePosition >=
                 POLYLITE_CENTERED_AT - SCROLL_PROGRESS_EPSILON &&
@@ -483,10 +501,17 @@ export default function ProductShowcaseSection() {
           </div>
         </div>
 
-        <a
+        <Link
+          aria-label="View Celebration products"
+          className="absolute inset-0 z-40"
+          href="/products?brand=celebration"
+          ref={bannerLinkRef}
+        />
+
+        <Link
           aria-label="View products"
           className="invisible absolute top-0 left-0 z-50 grid size-[clamp(108px,8.68vw,138px)] place-items-center rounded-full text-[clamp(14px,1.11vw,17px)] font-medium text-white opacity-0 [font-family:var(--font-roboto)]"
-          href=""
+          href="/products?brand=celebration"
           ref={productCursorRef}
           tabIndex={-1}
         >
@@ -499,7 +524,7 @@ export default function ProductShowcaseSection() {
             width={125}
           />
           <span className="relative">View Products</span>
-        </a>
+        </Link>
       </div>
 
       <div className="hidden max-[767px]:block motion-reduce:block">

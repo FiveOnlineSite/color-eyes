@@ -2,8 +2,8 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { Suspense, useEffect, useRef, useState } from "react";
 import Header from "@/components/home/Header";
 import Footer from "@/components/home/Footer";
 import { products as productCatalogue } from "@/data/products";
@@ -84,7 +84,7 @@ function FilterButton({ active = false, children, sort = false, ...buttonProps }
   );
 }
 
-function ProductCard({ product = fallbackProduct }) {
+export function ProductCard({ product = fallbackProduct }) {
   const defaultImage = product.featuredImage ?? "/assets/plp/product-clear-lens.png";
   const [displayedImage, setDisplayedImage] = useState(defaultImage);
   const [displayedSprite, setDisplayedSprite] = useState(null);
@@ -226,9 +226,14 @@ function HelpCard({ icon, title, action }) {
   );
 }
 
-export default function ProductListingPage({ initialCategoryId = "all" }) {
+function ProductListingPageContent({ initialCategoryId = "all" }) {
   const router = useRouter();
-  const [activeCategoryId, setActiveCategoryId] = useState(initialCategoryId);
+  const searchParams = useSearchParams();
+  const categoryFromUrl = searchParams.get("brand");
+  const selectedCategoryId = productCategories.some((category) => category.id === categoryFromUrl)
+    ? categoryFromUrl
+    : initialCategoryId;
+  const activeCategoryId = selectedCategoryId;
   const [isPriceFilterOpen, setIsPriceFilterOpen] = useState(false);
   const [isColorFilterOpen, setIsColorFilterOpen] = useState(false);
   const [isLensTypeFilterOpen, setIsLensTypeFilterOpen] = useState(false);
@@ -238,6 +243,7 @@ export default function ProductListingPage({ initialCategoryId = "all" }) {
   const [selectedLensType, setSelectedLensType] = useState("");
   const [selectedSort, setSelectedSort] = useState("");
   const filterControlsRef = useRef(null);
+
   const activeCategory = productCategories.find((category) => category.id === activeCategoryId) ?? productCategories[0];
   const productsInView = activeCategoryId === "all" ? allProducts : activeCategory.products;
   const selectedPriceFilter = priceFilters.find((priceFilter) => priceFilter.id === selectedPrice);
@@ -304,9 +310,8 @@ export default function ProductListingPage({ initialCategoryId = "all" }) {
           <button
             aria-label="Show all products"
             aria-pressed={activeCategoryId === "all"}
-            className={`h-[38px] shrink-0 rounded px-3 text-sm font-semibold transition ${activeCategoryId === "all" ? "bg-[#e3f1fc] text-[#097890] ring-1 ring-inset ring-[#097890]" : "hover:bg-[#f0f7ff]"}`}
+            className={`grid h-[38px] shrink-0 place-items-center rounded border px-3 text-sm font-semibold transition ${activeCategoryId === "all" ? "border-[#097890] bg-[#e3f1fc] text-[#097890]" : "border-[#666] hover:bg-[#f0f7ff]"}`}
             onClick={() => {
-              setActiveCategoryId("all");
               clearFilters();
               router.push("/products", { scroll: false });
             }}
@@ -322,12 +327,11 @@ export default function ProductListingPage({ initialCategoryId = "all" }) {
               <button
                 aria-label={`Show ${category.label} products`}
                 aria-pressed={isActive}
-                className={`grid h-[38px] shrink-0 place-items-center rounded px-1 transition ${isActive ? "bg-[#e3f1fc] ring-1 ring-inset ring-[#097890]" : "hover:bg-[#f0f7ff]"}`}
+                className={`grid h-[38px] shrink-0 place-items-center rounded border px-1 transition ${isActive ? "border-[#097890] bg-[#e3f1fc]" : "border-[#666] hover:bg-[#f0f7ff]"}`}
                 key={category.id}
                 onClick={() => {
-                  setActiveCategoryId(category.id);
                   clearFilters();
-                  router.push(`/products/${category.id}`, { scroll: false });
+                  router.push(`/products?brand=${category.id}`, { scroll: false });
                 }}
                 type="button"
               >
@@ -554,5 +558,13 @@ export default function ProductListingPage({ initialCategoryId = "all" }) {
       <div className="h-6 bg-white" />
       <Footer />
     </main>
+  );
+}
+
+export default function ProductListingPage(props) {
+  return (
+    <Suspense fallback={null}>
+      <ProductListingPageContent {...props} />
+    </Suspense>
   );
 }

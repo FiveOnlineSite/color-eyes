@@ -1,13 +1,13 @@
 "use client";
 
 import Image from "next/image";
-import Link from "next/link";
 import { useState } from "react";
 import Header from "@/components/home/Header";
 import Footer from "@/components/home/Footer";
 import ActionLink from "@/components/home/ActionLink";
 import SectionBadge from "@/components/home/SectionBadge";
 import SellerSection from "@/components/product/SellerSection";
+import { ProductCard } from "@/app/products/page";
 import { products } from "@/data/products";
 
 const questions = [
@@ -133,12 +133,6 @@ export default function FindMyProductPage() {
     window.setTimeout(() => document.querySelector("#recommendations")?.scrollIntoView({ behavior: "smooth", block: "start" }), 20);
   };
 
-  const editAnswer = (index) => {
-    setShowConfirmation(false);
-    setShowResults(false);
-    setActiveQuestion(index);
-  };
-
   return (
     <main className="overflow-x-clip bg-[#fcfcfc]">
       <Header homePath="/" activePage="home" />
@@ -156,18 +150,18 @@ export default function FindMyProductPage() {
         </div>
       </section>
 
-      <section className="mx-auto mt-20 w-[min(1280px,89%)] max-[760px]:mt-12" id="lens-finder" aria-labelledby="lens-finder-title">
+      {!showResults && <section className="mx-auto mt-20 w-[min(1280px,89%)] max-[760px]:mt-12" id="lens-finder" aria-labelledby="lens-finder-title">
         <h2 id="lens-finder-title" className="sr-only">Find your ideal contact lenses</h2>
         <div aria-live="polite"><QuestionPanel item={questions[activeQuestion]} index={activeQuestion} progress={completed} selected={answers[activeQuestion]} onSelect={(value) => selectAnswer(activeQuestion, value)} /></div>
-      </section>
+      </section>}
 
       {showResults && <>
-        <section className="mt-20 w-full scroll-mt-28 bg-white py-[60px] max-[760px]:mt-12 max-[760px]:py-12" id="recommendations" aria-labelledby="recommendations-title">
+        <section className="mt-20 w-full scroll-mt-28 bg-white pt-4 pb-[60px] max-[760px]:mt-12 max-[760px]:pt-4 max-[760px]:pb-12" id="recommendations" aria-labelledby="recommendations-title">
           <div className="mx-auto w-[min(1280px,89%)]">
             <SectionBadge>Your Lens Match</SectionBadge>
             <h2 id="recommendations-title" className="mt-5 text-4xl leading-10 font-semibold text-[#232323] [font-family:var(--font-gabarito)] max-[640px]:text-3xl">Picked Around Your Preferences</h2>
             <p className="mt-3 text-base text-[#444] [font-family:var(--font-manrope)]">Based on your choices, these lenses could be a great fit.</p>
-            <div className="mt-8 grid grid-cols-4 gap-5 max-[900px]:grid-cols-2 max-[560px]:grid-cols-1">{recommended.map((product) => <article className="overflow-hidden rounded border border-black/10 bg-white" key={product.slug}><Link className="relative block aspect-square bg-[#f4f4f6]" href={`/products/${product.slug}`}><Image className="object-contain p-5" src={product.featuredImage} alt={product.name} fill sizes="(max-width: 560px) 90vw, (max-width: 900px) 45vw, 305px" /></Link><div className="p-4"><h3 className="font-[family-name:var(--font-gabarito)] text-lg font-medium text-[#232323]">{product.name}</h3><p className="mt-1 text-sm text-[#444] [font-family:var(--font-manrope)]">{product.productType}</p><p className="mt-3 font-semibold text-[#1893ae]">{product.price}</p><Link className="mt-4 inline-block border-b border-[#1893ae] text-sm font-semibold text-[#137286]" href={`/products/${product.slug}`}>View product</Link></div></article>)}</div>
+            <div className="mt-8 grid grid-cols-4 gap-5 max-[900px]:grid-cols-2 max-[560px]:grid-cols-1">{recommended.map((product) => <ProductCard key={product.slug} product={product} />)}</div>
           </div>
         </section>
         <SellerSection compactTop product={{ selectedProductName: "Celebration Color Lenses", selectedProductSubtitle: "Premium Colored Contact Lenses" }} />
@@ -181,8 +175,7 @@ export default function FindMyProductPage() {
           <p className="mt-3 text-sm leading-5 text-[#666] [font-family:var(--font-manrope)]">Review your preferences before we find the ColorEyes lenses that matches you best</p>
           <div className="mt-6 grid grid-cols-2 gap-3 max-[520px]:mt-5 max-[520px]:grid-cols-1 max-[520px]:gap-2">{questions.map((item, index) => <div className="flex h-16 items-center rounded-xl bg-[#fcfcfc] p-2 shadow-[0_1px_16px_rgba(0,0,0,.1)] max-[520px]:h-14 max-[520px]:py-1" key={item.question}>
             <Image className="size-12 shrink-0" src={selectionIcons[index]} alt="" width={48} height={48} />
-            <span className="ml-2.5 min-w-0 flex-1"><span className="block text-xs leading-[18px] text-[#232323] [font-family:var(--font-manrope)]">{selectionLabels[index]}</span><strong className="block truncate font-[family-name:var(--font-gabarito)] text-[15px] leading-5 font-semibold text-black">{answers[index]?.replace("color", "Color").replace("Single-Vision", "Single Vision")}</strong></span>
-            <button className="ml-2 grid size-9 shrink-0 place-items-center transition hover:opacity-70" type="button" onClick={() => editAnswer(index)} aria-label={`Edit ${selectionLabels[index]}`}><Image src="/assets/find-my-product/popup-edit.svg" alt="" width={20} height={20} /></button>
+            <label className="ml-2.5 min-w-0 flex-1"><span className="block text-xs leading-[18px] text-[#232323] [font-family:var(--font-manrope)]">{selectionLabels[index]}</span><select aria-label={`Change ${selectionLabels[index]}`} className="block w-full cursor-pointer truncate bg-transparent font-[family-name:var(--font-gabarito)] text-[15px] leading-5 font-semibold text-black outline-none" value={answers[index] ?? ""} onChange={(event) => setAnswers((current) => ({ ...current, [index]: event.target.value }))}>{item.options.map((option) => <option key={option.label} value={option.label}>{option.label}</option>)}</select></label>
           </div>)}</div>
           <button className="mt-6 h-10 w-full rounded-[4px] bg-[#1893ae] font-[family-name:var(--font-manrope)] text-sm font-semibold text-white transition hover:bg-[#137286] disabled:cursor-not-allowed disabled:opacity-50 max-[520px]:mt-5" type="button" onClick={confirmAnswers} disabled={completed !== questions.length}>Find My Matches</button>
         </div>

@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useState } from "react";
 
 import ActionLink from "./ActionLink";
@@ -15,14 +16,16 @@ const links = [
 ];
 
 const brands = [
-  { name: "ClearThin", image: "/assets/plp/brand-clearthin.png" },
-  { name: "Polylite", image: "/assets/plp/brand-polylite.png" },
-  { name: "Celebration", image: "/assets/plp/brand-celebration.png" },
+  { id: "clearthin", name: "ClearThin", image: "/assets/plp/brand-clearthin.png" },
+  { id: "polylite", name: "Polylite", image: "/assets/plp/brand-polylite.png" },
+  { id: "celebration", name: "Celebration", image: "/assets/plp/brand-celebration.png" },
 ];
 
 export default function Header({ logoSrc = "/assets/logo.webp", homePath = "", activePage = "home" }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isBrandsOpen, setIsBrandsOpen] = useState(false);
+  const pathname = usePathname();
+  const isBrandsActive = isBrandsOpen || pathname === "/products";
   const linkHref = (href) => href.startsWith("/") ? href : `${homePath}${href}`;
 
   return (
@@ -48,7 +51,7 @@ export default function Header({ logoSrc = "/assets/logo.webp", homePath = "", a
       >
         {links.slice(0, 2).map(([label, href]) => (
           <Link
-            className={`relative py-7 whitespace-nowrap transition-colors after:absolute after:right-0 after:bottom-[16px] after:left-0 after:h-[3px] after:origin-center after:scale-x-40 after:rounded-full after:bg-[#1893ae] after:opacity-0 after:transition-all after:duration-300 after:ease-out hover:text-[#08778f] hover:after:scale-x-100 hover:after:opacity-100 ${(activePage === "home" && label === "Home") || (activePage === "about" && label === "About Us") ? "font-bold text-[#08778f] after:scale-x-100 after:opacity-100" : ""}`}
+            className={`relative py-7 whitespace-nowrap transition-colors after:absolute after:right-0 after:bottom-[16px] after:left-0 after:h-[3px] after:origin-center after:scale-x-40 after:rounded-full after:bg-[#1893ae] after:opacity-0 after:transition-all after:duration-300 after:ease-out hover:text-[#08778f] hover:after:scale-x-100 hover:after:opacity-100 ${(pathname === "/" && label === "Home") || (activePage === "about" && label === "About Us") ? "font-bold text-[#08778f] after:scale-x-100 after:opacity-100" : ""}`}
             href={linkHref(href)}
             key={label}
           >
@@ -60,15 +63,15 @@ export default function Header({ logoSrc = "/assets/logo.webp", homePath = "", a
           onMouseEnter={() => setIsBrandsOpen(true)}
           onMouseLeave={() => setIsBrandsOpen(false)}
         >
-          <button
+          <Link
             aria-controls="brands-navigation"
             aria-expanded={isBrandsOpen}
-            className={`relative flex items-center gap-1 py-7 whitespace-nowrap transition-colors after:absolute after:right-0 after:bottom-[16px] after:left-0 after:h-[3px] after:origin-center after:rounded-full after:bg-[#1893ae] after:transition-all after:duration-300 after:ease-out hover:text-[#08778f] ${isBrandsOpen ? "font-bold text-[#08778f] after:scale-x-100 after:opacity-100" : "after:scale-x-40 after:opacity-0"}`}
-            onClick={() => setIsBrandsOpen((open) => !open)}
-            type="button"
+            className={`relative flex items-center gap-1 py-7 whitespace-nowrap transition-colors after:absolute after:right-0 after:bottom-[16px] after:left-0 after:h-[3px] after:origin-center after:rounded-full after:bg-[#1893ae] after:transition-all after:duration-300 after:ease-out hover:text-[#08778f] ${isBrandsActive ? "font-bold text-[#08778f] after:scale-x-100 after:opacity-100" : "after:scale-x-40 after:opacity-0"}`}
+            href="/products"
+            onClick={() => setIsBrandsOpen(false)}
           >
             Our Brands
-          </button>
+          </Link>
           <div
             className={`absolute top-[calc(100%-12px)] left-1/2 w-[440px] -translate-x-1/2 rounded-3xl bg-white p-3 shadow-[0_16px_36px_rgba(0,0,0,0.14)] transition-all duration-200 ${isBrandsOpen ? "pointer-events-auto translate-y-0 opacity-100" : "pointer-events-none -translate-y-2 opacity-0"}`}
             id="brands-navigation"
@@ -77,7 +80,7 @@ export default function Header({ logoSrc = "/assets/logo.webp", homePath = "", a
               {brands.map((brand) => (
                 <Link
                   className="group rounded-2xl p-3 text-center transition hover:bg-[#e3f1fc] focus-visible:bg-[#e3f1fc]"
-                  href="/products"
+                  href={`/products?brand=${brand.id}`}
                   key={brand.name}
                   onClick={() => setIsBrandsOpen(false)}
                 >
@@ -134,12 +137,12 @@ export default function Header({ logoSrc = "/assets/logo.webp", homePath = "", a
           </Link>
         ))}
         <div className="rounded-2xl bg-[#f7fafc] p-2">
-          <p className="px-3 pt-1 pb-2 text-xs font-bold tracking-[0.12em] text-[#08778f] uppercase">Our Brands</p>
+          <Link className="block px-3 pt-1 pb-2 text-xs font-bold tracking-[0.12em] text-[#08778f] uppercase" href="/products" onClick={() => setIsMenuOpen(false)}>Our Brands</Link>
           <div className="grid grid-cols-3 gap-1">
             {brands.map((brand) => (
               <Link
                 className="rounded-xl p-2 text-center transition hover:bg-[#e3f1fc]"
-                href="/products"
+                href={`/products?brand=${brand.id}`}
                 key={brand.name}
                 onClick={() => setIsMenuOpen(false)}
               >
